@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+	
+	<bean id="basicDataSource_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://${basic.db.r.host}:${basic.db.r.port}/db_breakfast_v2?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull" />
+		<property name="username" value="${basic.db.r.username}" />
+		<property name="password" value="${basic.db.r.password}" />
+		<property name="initialSize" value="2" />
+		<property name="maxActive" value="5" />
+		<property name="maxIdle" value="5" />
+		<property name="maxWait" value="5000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="validationQuery" value=" SELECT 1 " />
+		<property name="poolPreparedStatements" value="true" />
+	</bean>
+	
+	 <bean id="basicDataSource_w" class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url"
+            value="jdbc:mysql://${basic.db.w.host}:${basic.db.w.port}/db_breakfast_v2?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull" />
+        <property name="username" value="${basic.db.w.username}" />
+        <property name="password" value="${basic.db.w.password}" />
+        <property name="initialSize" value="5" />
+        <property name="maxActive" value="20" />
+        <property name="maxIdle" value="5" />
+        <property name="maxWait" value="5000" />
+        <property name="testWhileIdle" value="true" />
+        <property name="validationQuery" value=" SELECT 1 " />
+        <property name="poolPreparedStatements" value="true" />
+    </bean>	
+	
+	
+	<bean id="basicBaseDao" abstract="true"
+		class="com.anlaiye.data.common.dao.impl.BaseDaoImpl">
+		<property name="dataSourceReadOnly" ref="basicDataSource_r" />
+		<property name="dataSource" ref="basicDataSource_w" />
+	</bean>
+	
+	
+	<!--app-->
+	<bean id="announcementInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.AnnouncementInfoDaoImpl" parent="basicBaseDao" />
+	<bean id="announcementIndexDao" class="com.anlaiye.breakfast.basic.common.dao.impl.AnnouncementIndexDaoImpl" parent="basicBaseDao" />
+	<bean id="buildingManagerInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.BuildingManagerInfoDaoImpl" parent="basicBaseDao" />
+	<bean id="schoolInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.SchoolInfoDaoImpl" parent="basicBaseDao" />
+	<bean id="buildingManagerBindingInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.BuildingManagerBindingInfoDaoImpl" parent="basicBaseDao" />
+	<bean id="buildingManagerBindingIndexDao" class="com.anlaiye.breakfast.basic.common.dao.impl.BuildingManagerBindingIndexDaoImpl" parent="basicBaseDao" />
+	<bean id="supplierInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.SupplierInfoDaoImpl" parent="basicBaseDao" />
+	<bean id="supplierUserInfoDaoImpl" class="com.anlaiye.breakfast.basic.common.dao.impl.SupplierUserInfoDaoImpl" parent="basicBaseDao" />
+	<bean id="supplierUserIndexDaoImpl" class="com.anlaiye.breakfast.basic.common.dao.impl.SupplierUserIndexDaoImpl" parent="basicBaseDao" />
+	
+	
+	<!-- transaction manager -->
+	<!-- 声明事务 -->
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<constructor-arg ref="basicDataSource_w" />
+	</bean>
+ 	
+	<!-- 启动注解事务 -->
+	
+	<tx:annotation-driven transaction-manager="transactionManager"  />
+	 
+	
+</beans>
