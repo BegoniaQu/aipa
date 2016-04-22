@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 
 public enum ResultCode {
-	OK(200000, ""),
+	OK(0, ""),
 
 	/********************************
 	 **  Client Errors Definition  **

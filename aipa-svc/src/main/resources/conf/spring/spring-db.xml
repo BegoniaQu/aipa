@@ -71,6 +71,7 @@
 		<property name="filters" value="${druid.filters}" />
 	</bean>
 	 
+	 <!-- 
 	<bean id="jdbcTemplate_r" class="org.springframework.jdbc.core.JdbcTemplate">
 		<constructor-arg>
 			<ref bean="dataSource_r" />
@@ -82,13 +83,22 @@
 			<ref bean="dataSource_w" />
 		</constructor-arg>
 	</bean>
-	
+	 -->
+	 <!--  
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<constructor-arg ref="dataSource_w" />
 	</bean>
 	 
 	<tx:annotation-driven transaction-manager="transactionManager" />
-
+	-->
 	
+	<bean id="basicBaseDao" abstract="true"
+		class="com.qy.data.common.dao.impl.BaseDaoImpl">
+		<property name="dataSourceReadOnly" ref="dataSource_r" />
+		<property name="dataSource" ref="dataSource_w" />
+	</bean>
+	
+	<!--app-->
+	<bean id="userDao" class="com.aipa.user.module.dao.impl.UserDaoImpl" parent="basicBaseDao" />
 	
 </beans>
