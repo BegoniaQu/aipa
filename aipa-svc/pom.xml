@@ -314,6 +314,15 @@
 		<version>2.4.2</version>
 		<type>jar</type>
 	</dependency>
+	
+	<!-- huawei security -->
+	<dependency>
+		<groupId>com.huawei.eidc.slee.security</groupId>
+		<artifactId>security</artifactId>
+		<version>1.0</version>
+		<type>jar</type>
+	</dependency>
+	
   </dependencies>
   <build>
   	<plugins>

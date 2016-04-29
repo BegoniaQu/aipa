@@ -20,11 +20,8 @@ public class IndexApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value={"index.ap"},method = RequestMethod.GET)
-	public User toIndex(HttpServletRequest request,HttpServletResponse response){
-		User user = new User();
-		user.setName("quyang");
-		user.setPwd("1234");
-		return user;
+	public Object toIndex(HttpServletRequest request,HttpServletResponse response){
+		return "hello,aipa";
 	}
 	
 }

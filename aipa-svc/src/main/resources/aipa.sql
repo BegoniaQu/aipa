@@ -35,8 +35,7 @@ create table tb_user(
 	deleted bit(1) NOT NULL DEFAULT 1	-- 0：正常，1:删除
 );
 -- 创建索引
-CREATE INDEX i_user_username ON aipa_user (username);
-
+CREATE INDEX i_user_username ON tb_user (username);
 
 -- 用户收藏表
 drop table if exists tb_user_note_collect;
@@ -46,7 +45,6 @@ create table tb_user_note_collect(
 	note_id int(11),	-- 帖子ID
 	category_id int(11),--帖子种类（根据种类找到帖子在哪张帖子表中）
 );
-
 
 -- 用户关注社区分类表
 drop table if exists tb_user_category_interest;

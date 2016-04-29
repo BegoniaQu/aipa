@@ -32,6 +32,15 @@ public final class ParameterTool {
 	private ParameterTool() {
 	}
 
+	public static String getHeaderParameterString(HttpServletRequest request,
+			String name,String defaultValue){
+		String value = request.getHeader(name);
+		if(StringUtil.isEmpty(value)){
+			return defaultValue;
+		}
+		return value;
+	}
+	
 	public static Integer getParameterInteger(HttpServletRequest request,
 			String name, Integer defaultValue) {
 		Integer i = defaultValue;

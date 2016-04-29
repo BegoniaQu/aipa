@@ -20,6 +20,7 @@ public enum ResultCode {
 	AuthenticationFailure(401002, "身份校验失败！"),
 	AuthenticationExpired(401003, "身份过期！"),
 	VerifySignatureFailure(401004, "请求校验失败！"),
+	ExistedUser(401005,"用户名已存在"),
 	
 	ActionNotAuthorized(401100, "权限验证失败！"),
 	

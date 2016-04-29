@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.aipa.svc.common.auth.AuthorizationFilter;
+//import com.aipa.svc.common.auth.AuthorizationFilter;
 import com.aipa.svc.common.exception.InvalidRequestRuntimeException;
 import com.aipa.svc.common.exception.UnAuthorizedErrorRuntimeException;
 import com.aipa.svc.common.exception.UnAuthorizedNoConsistRuntimeException;
@@ -27,8 +27,8 @@ public class RequestExtract {
 	private static final String REQUEST_PARAM_APPPLT = "appplt";
 	private static final String REQUEST_PARAM_APPVER = "appver";
 	private static final String REQUEST_PARAM_ACTION = "action";//分页方式，0 瀑布式  1 分页式
-	private static final String REQUEST_PARAM_PAGE_SIZE = "pageSize";
-	private static final String REQUEST_PARAM_PAGE_NUM = "page";
+	private static final String REQUEST_PARAM_PAGE_SIZE = "ps";
+	private static final String REQUEST_PARAM_PAGE_NUM = "pn";
 	private static final String REQUEST_PARAM_NEXT_TOKEN = "nt";
 	private static final String REQUEST_PARAM_PREVIOUS_TOKEN = "pt";
 	private static final String REQUEST_PARAM_ASC = "asc";
@@ -38,9 +38,9 @@ public class RequestExtract {
 	private static final String REQUEST_PARAM_SIGN = "sign";
 	//private static final String REQUEST_PARAM_IDS = "ids";
 	
-	public static final String REQUEST_ATTR_USER_NAME = AuthorizationFilter.KEY_USER_NAME;
-	public static final String REQUEST_ATTR_USER_TOKEN = AuthorizationFilter.KEY_AUTH_TOKEN;
-	private static final String REQUEST_ATTR_SIGN = AuthorizationFilter.KEY_AUTH_SIGNATURE;
+//	public static final String REQUEST_ATTR_USER_NAME = AuthorizationFilter.KEY_USER_NAME;
+//	public static final String REQUEST_ATTR_USER_TOKEN = AuthorizationFilter.KEY_AUTH_TOKEN;
+//	private static final String REQUEST_ATTR_SIGN = AuthorizationFilter.KEY_AUTH_SIGNATURE;
 	
 	public static final int DEFAULT_PAGE_SIZE = 10;
 	public static final int DEFAULT_PAGE_NUM = 0;
@@ -214,7 +214,7 @@ public class RequestExtract {
 	}
 	
 	public static Appplt getAppplt(HttpServletRequest request){
-		String from = ParameterTool.getParameterString(request, REQUEST_PARAM_APPPLT, null);
+		String from = ParameterTool.getParameterString(request, REQUEST_PARAM_APPPLT);
 		if(StringUtil.isEmpty(from)){
 			throw new InvalidRequestRuntimeException("param error, appplt=" + from);
 		}
@@ -247,52 +247,56 @@ public class RequestExtract {
 	}
 	
 	public static String getAppver(HttpServletRequest request){
-		return ParameterTool.getParameterString(request, REQUEST_PARAM_APPVER, null);
+		return ParameterTool.getParameterString(request, REQUEST_PARAM_APPVER);
 	}
 	
-	public static String getSign(HttpServletRequest request){
-		String sign = ParameterTool.getAttrString(request, REQUEST_ATTR_SIGN, null);
-		if (StringUtil.isEmpty(sign)) {
-			sign = ParameterTool.getParameterString(request, REQUEST_PARAM_SIGN, null);
-		}
-		return sign;
-	}
+//	public static String getSign(HttpServletRequest request){
+//		String sign = ParameterTool.getAttrString(request, REQUEST_ATTR_SIGN, null);
+//		if (StringUtil.isEmpty(sign)) {
+//			sign = ParameterTool.getParameterString(request, REQUEST_PARAM_SIGN, null);
+//		}
+//		return sign;
+//	}
 	
 	/**
 	 * 不存在返回null
 	 * @param request
 	 * @return
 	 */
-	public static String getAuthUserName(HttpServletRequest request){
-		return ParameterTool.getAttrString(request, REQUEST_ATTR_USER_NAME, null);
-	}
+//	public static String getAuthUserName(HttpServletRequest request){
+//		return ParameterTool.getAttrString(request, REQUEST_ATTR_USER_NAME, null);
+//	}
 
-	public static String authUserName(HttpServletRequest request){
-		String userNameAttr = getAuthUserName(request);
-		
-		if(StringUtil.isEmpty(userNameAttr)){
-			throw new UnAuthorizedNoTokenRuntimeException("no token");
-		}
-		
-		return userNameAttr;
+//	public static String authUserName(HttpServletRequest request){
+//		String userNameAttr = getAuthUserName(request);
+//		
+//		if(StringUtil.isEmpty(userNameAttr)){
+//			throw new UnAuthorizedNoTokenRuntimeException("no token");
+//		}
+//		
+//		return userNameAttr;
+//	}
+	
+//	public static String getUserToken(HttpServletRequest request) {
+//		String tk = ParameterTool.getAttrString(request, REQUEST_ATTR_USER_TOKEN, null);
+//		if (StringUtil.isEmpty(tk)) {
+//			tk = ParameterTool.getParameterString(request, REQUEST_PARAM_USER_TOKEN, null);
+//		}
+//		return tk;
+//	}
+	
+	public static String getTk(HttpServletRequest request){
+		return ParameterTool.getHeaderParameterString(request, REQUEST_PARAM_USER_TOKEN,null);
 	}
 	
-	public static String getUserToken(HttpServletRequest request) {
-		String tk = ParameterTool.getAttrString(request, REQUEST_ATTR_USER_TOKEN, null);
-		if (StringUtil.isEmpty(tk)) {
-			tk = ParameterTool.getParameterString(request, REQUEST_PARAM_USER_TOKEN, null);
-		}
-		return tk;
-	}
-	
-	public static void verifyUserName(HttpServletRequest request, String userName){
-		String userNameAttr = authUserName(request);
-		
-		if(!userName.equalsIgnoreCase(userNameAttr)){
-			throw new UnAuthorizedNoConsistRuntimeException("user name in token not consistent with param, token="
-					+ userNameAttr+ ", param=" + userName);
-		}
-	}
+//	public static void verifyUserName(HttpServletRequest request, String userName){
+//		String userNameAttr = authUserName(request);
+//		
+//		if(!userName.equalsIgnoreCase(userNameAttr)){
+//			throw new UnAuthorizedNoConsistRuntimeException("user name in token not consistent with param, token="
+//					+ userNameAttr+ ", param=" + userName);
+//		}
+//	}
 	
 	public static String getUrlForSign(HttpServletRequest request) {
 		Map<String, String> map = new TreeMap<String, String>();
@@ -342,20 +346,20 @@ public class RequestExtract {
 	 * @param userAuthMust
 	 * @return
 	 */
-	public static void verifySign(HttpServletRequest request, String clientPrvKey, String userPrvApiKey) {
-		String method = request.getMethod().toUpperCase();
-		String json = ServletUtils.readStringFromRequest(request);
-		String rawStrBeforeSign = null;
-		String url = getUrlForSign(request);
-		String token = getUserToken(request);
-		rawStrBeforeSign = getStrForSign(method, url, json, token, clientPrvKey, userPrvApiKey);
-		
-		String signed = MD5Util.encode(rawStrBeforeSign);
-		if (signed.equalsIgnoreCase(getSign(request))) {
-			return ;
-		}
-		throw new UnAuthorizedNoTokenRuntimeException("incorrect sign");
-	}
+//	public static void verifySign(HttpServletRequest request, String clientPrvKey, String userPrvApiKey) {
+//		String method = request.getMethod().toUpperCase();
+//		String json = ServletUtils.readStringFromRequest(request);
+//		String rawStrBeforeSign = null;
+//		String url = getUrlForSign(request);
+//		String token = getUserToken(request);
+//		rawStrBeforeSign = getStrForSign(method, url, json, token, clientPrvKey, userPrvApiKey);
+//		
+//		String signed = MD5Util.encode(rawStrBeforeSign);
+//		if (signed.equalsIgnoreCase(getSign(request))) {
+//			return ;
+//		}
+//		throw new UnAuthorizedNoTokenRuntimeException("incorrect sign");
+//	}
 	
 	/**
 	 * 获取签名后的结果
@@ -365,17 +369,17 @@ public class RequestExtract {
 	 * @param userAuthMust
 	 * @return
 	 */
-	public static String getSign(HttpServletRequest request, String clientPrvKey, String userPrvApiKey) {
-		String method = request.getMethod().toUpperCase();
-		String json = ServletUtils.readStringFromRequest(request);
-		String rawStrBeforeSign = null;
-		String url = getUrlForSign(request);
-		String token = getUserToken(request);
-		rawStrBeforeSign = getStrForSign(method, url, json, token, clientPrvKey, userPrvApiKey);
-		
-		String signed = MD5Util.encode(rawStrBeforeSign);
-		return signed;
-	}
+//	public static String getSign(HttpServletRequest request, String clientPrvKey, String userPrvApiKey) {
+//		String method = request.getMethod().toUpperCase();
+//		String json = ServletUtils.readStringFromRequest(request);
+//		String rawStrBeforeSign = null;
+//		String url = getUrlForSign(request);
+//		String token = getUserToken(request);
+//		rawStrBeforeSign = getStrForSign(method, url, json, token, clientPrvKey, userPrvApiKey);
+//		
+//		String signed = MD5Util.encode(rawStrBeforeSign);
+//		return signed;
+//	}
 	
 	/**
 	 * 做简单的签名，不需要apiKey
@@ -384,44 +388,44 @@ public class RequestExtract {
 	 * @param userAuthMust
 	 * @return
 	 */
-	public static boolean verifySimpleSign(HttpServletRequest request, String clientPrvKey, boolean userAuthMust) {
-		String method = request.getMethod().toUpperCase();
-		String json = ServletUtils.readStringFromRequest(request);
-		String rawStrBeforeSign = null;
-		String url = getUrlForSign(request);
-		if (userAuthMust) {
-			String token = getUserToken(request);
-			rawStrBeforeSign = getStrForSign(method, url, json, token, clientPrvKey, token);
-		} else {
-			rawStrBeforeSign = getStrForSign(method, url, json, null, clientPrvKey, null);
-		}
-		
-		String signed = MD5Util.encode(rawStrBeforeSign);
-		if (signed.equalsIgnoreCase(getSign(request))) {
-			return true;
-		}
-		return false;
-	}
+//	public static boolean verifySimpleSign(HttpServletRequest request, String clientPrvKey, boolean userAuthMust) {
+//		String method = request.getMethod().toUpperCase();
+//		String json = ServletUtils.readStringFromRequest(request);
+//		String rawStrBeforeSign = null;
+//		String url = getUrlForSign(request);
+//		if (userAuthMust) {
+//			String token = getUserToken(request);
+//			rawStrBeforeSign = getStrForSign(method, url, json, token, clientPrvKey, token);
+//		} else {
+//			rawStrBeforeSign = getStrForSign(method, url, json, null, clientPrvKey, null);
+//		}
+//		
+//		String signed = MD5Util.encode(rawStrBeforeSign);
+//		if (signed.equalsIgnoreCase(getSign(request))) {
+//			return true;
+//		}
+//		return false;
+//	}
 	
-	public static void verifySign(HttpServletRequest request){
-		//TODO:做签名验证
-		String sign = ParameterTool.getAttrString(request, REQUEST_ATTR_USER_NAME, null);
-		
-		if(StringUtil.isEmpty(sign)){
-			throw new UnAuthorizedErrorRuntimeException("sign error");
-		}
-	}
+//	public static void verifySign(HttpServletRequest request){
+//		//TODO:做签名验证
+//		String sign = ParameterTool.getAttrString(request, REQUEST_ATTR_USER_NAME, null);
+//		
+//		if(StringUtil.isEmpty(sign)){
+//			throw new UnAuthorizedErrorRuntimeException("sign error");
+//		}
+//	}
 	
-	public static String verifySignAndUserId(HttpServletRequest request){
-		verifySign(request);
-		return authUserName(request);
-	}
+//	public static String verifySignAndUserId(HttpServletRequest request){
+//		verifySign(request);
+//		return authUserName(request);
+//	}
 	
-	public static String verifyAuthUserName(HttpServletRequest request) {
-		String userId =  getUserIdMust(request);
-		verifyUserName(request, userId); //username 和 userid 是一回事； login_name则是用户...； nick_name是用户在服务内的...
-		return userId;
-	}
+//	public static String verifyAuthUserName(HttpServletRequest request) {
+//		String userId =  getUserIdMust(request);
+//		verifyUserName(request, userId); //username 和 userid 是一回事； login_name则是用户...； nick_name是用户在服务内的...
+//		return userId;
+//	}
 	public static final void main(String[] args) {
 		String method = "DELETE";
 		String json = "";

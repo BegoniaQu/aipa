@@ -98,7 +98,6 @@ public class User implements Serializable{
 	private boolean deleted = false;   // 0：删除，1：正常
 
 	
-	
 	public Long getId() {
 		return id;
 	}
@@ -250,4 +249,5 @@ public class User implements Serializable{
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
+
 }

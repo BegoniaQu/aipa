@@ -26,7 +26,8 @@
 	
 	</bean>
 	
-	
+	<!-- global exception -->
+	<bean class="com.aipa.svc.common.exception.AipaServerExceptionHandlerResolver" />
 
 	
 	<bean id="mappingJacksonHttpMessageConverter"
