@@ -10,7 +10,7 @@ public abstract class BaseApi {
 
 	
 	/**
-	 * 检查token是否过期
+	 * 检查token是否过期、以及用户是否有效
 	 * @param uid
 	 * @return
 	 */
@@ -19,6 +19,9 @@ public abstract class BaseApi {
 		long current = new Date().getTime();
 		long latestLoginDate = user.getLatest_login_time().getTime();
 		if((current - latestLoginDate) > AipaTokenUtil.expired){
+			return true;
+		}
+		if(!user.isEnabled()||user.isDeleted()){
 			return true;
 		}
 		return false;

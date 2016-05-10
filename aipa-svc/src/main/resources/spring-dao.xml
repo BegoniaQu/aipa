@@ -1,73 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:tx="http://www.springframework.org/schema/tx" 
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:util="http://www.springframework.org/schema/util"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx" 
+		xmlns:task="http://www.springframework.org/schema/task"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:cache="http://www.springframework.org/schema/cache" 
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+	http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+	http://www.springframework.org/schema/aop  http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd" default-lazy-init="true">
 	
-	<bean id="basicDataSource_r" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url"
-			value="jdbc:mysql://${basic.db.r.host}:${basic.db.r.port}/db_breakfast_v2?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull" />
-		<property name="username" value="${basic.db.r.username}" />
-		<property name="password" value="${basic.db.r.password}" />
-		<property name="initialSize" value="2" />
-		<property name="maxActive" value="5" />
-		<property name="maxIdle" value="5" />
-		<property name="maxWait" value="5000" />
-		<property name="testWhileIdle" value="true" />
-		<property name="validationQuery" value=" SELECT 1 " />
-		<property name="poolPreparedStatements" value="true" />
+	
+	<!-- 数据源 -->
+	
+	<bean id="dataSource_w" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="url" value="${connection.url}" />
+		<property name="username" value="${connection.username}" />
+		<property name="password" value="${connection.password}" />
+
+		<property name="initialSize" value="${druid.initialSize}" />
+		<property name="minIdle" value="${druid.minIdle}" />
+		<property name="maxActive" value="${druid.maxActive}" />
+
+		<property name="maxWait" value="${druid.maxWait}" />
+		
+		<property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}" />
+		
+		<property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
+
+		<property name="validationQuery" value="${druid.validationQuery}" />
+		<property name="testWhileIdle" value="${druid.testWhileIdle}" />
+		<property name="testOnBorrow" value="${druid.testOnBorrow}" />
+		<property name="testOnReturn" value="${druid.testOnReturn}" />
+
+		<property name="poolPreparedStatements" value="${druid.poolPreparedStatements}" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="${druid.maxPoolPreparedStatementPerConnectionSize}" />
+
+		<property name="filters" value="${druid.filters}" />
 	</bean>
-	
-	 <bean id="basicDataSource_w" class="org.apache.commons.dbcp.BasicDataSource"
-        destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url"
-            value="jdbc:mysql://${basic.db.w.host}:${basic.db.w.port}/db_breakfast_v2?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull" />
-        <property name="username" value="${basic.db.w.username}" />
-        <property name="password" value="${basic.db.w.password}" />
-        <property name="initialSize" value="5" />
-        <property name="maxActive" value="20" />
-        <property name="maxIdle" value="5" />
-        <property name="maxWait" value="5000" />
-        <property name="testWhileIdle" value="true" />
-        <property name="validationQuery" value=" SELECT 1 " />
-        <property name="poolPreparedStatements" value="true" />
-    </bean>	
-	
+	 
+	 <!-- 
+	<bean id="jdbcTemplate_r" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg>
+			<ref bean="dataSource_r" />
+		</constructor-arg>
+	</bean>
+	  
+	<bean id="jdbcTemplate_w" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg>
+			<ref bean="dataSource_w" />
+		</constructor-arg>
+	</bean>
+	 -->
+	 <!--  
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<constructor-arg ref="dataSource_w" />
+	</bean>
+	 
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	-->
 	
 	<bean id="basicBaseDao" abstract="true"
-		class="com.anlaiye.data.common.dao.impl.BaseDaoImpl">
-		<property name="dataSourceReadOnly" ref="basicDataSource_r" />
-		<property name="dataSource" ref="basicDataSource_w" />
+		class="com.qy.data.common.dao.impl.BaseDaoImpl">
+		<property name="dataSource" ref="dataSource_w" />
 	</bean>
-	
 	
 	<!--app-->
-	<bean id="announcementInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.AnnouncementInfoDaoImpl" parent="basicBaseDao" />
-	<bean id="announcementIndexDao" class="com.anlaiye.breakfast.basic.common.dao.impl.AnnouncementIndexDaoImpl" parent="basicBaseDao" />
-	<bean id="buildingManagerInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.BuildingManagerInfoDaoImpl" parent="basicBaseDao" />
-	<bean id="schoolInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.SchoolInfoDaoImpl" parent="basicBaseDao" />
-	<bean id="buildingManagerBindingInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.BuildingManagerBindingInfoDaoImpl" parent="basicBaseDao" />
-	<bean id="buildingManagerBindingIndexDao" class="com.anlaiye.breakfast.basic.common.dao.impl.BuildingManagerBindingIndexDaoImpl" parent="basicBaseDao" />
-	<bean id="supplierInfoDao" class="com.anlaiye.breakfast.basic.common.dao.impl.SupplierInfoDaoImpl" parent="basicBaseDao" />
-	<bean id="supplierUserInfoDaoImpl" class="com.anlaiye.breakfast.basic.common.dao.impl.SupplierUserInfoDaoImpl" parent="basicBaseDao" />
-	<bean id="supplierUserIndexDaoImpl" class="com.anlaiye.breakfast.basic.common.dao.impl.SupplierUserIndexDaoImpl" parent="basicBaseDao" />
+	<bean id="userDao" class="com.aipa.user.module.dao.impl.UserDaoImpl" parent="basicBaseDao" />
+	<bean id="userCategoryInterestDao" class="com.aipa.user.module.dao.impl.UserCategoryInterestDaoImpl" parent="basicBaseDao" />
+	<bean id="userNoteCollectDao" class="com.aipa.user.module.dao.impl.UserNoteCollectDaoImpl" parent="basicBaseDao" />
 	
-	
-	<!-- transaction manager -->
-	<!-- 声明事务 -->
-	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<constructor-arg ref="basicDataSource_w" />
-	</bean>
- 	
-	<!-- 启动注解事务 -->
-	
-	<tx:annotation-driven transaction-manager="transactionManager"  />
-	 
-	
+	<bean id="communityCategoryDao" class="com.aipa.community.module.dao.impl.CommunityCategoryDaoImpl" parent="basicBaseDao" />
+	<bean id="communityNoteDao" class="com.aipa.community.module.dao.impl.CommunityNoteDaoImpl" parent="basicBaseDao" />
 </beans>

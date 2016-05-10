@@ -21,18 +21,17 @@
 	<!--  
 	<context:property-placeholder location="classpath:conf/props/config.properties"/>
 	-->
-	<bean id="propertyConfigurer-payment"
+	<bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="order" value="1" />
         <property name="ignoreUnresolvablePlaceholders" value="true" />
         <property name="locations">
             <list>
-                <value>classpath*:conf/props/${project_env}/config.properties</value>
-                <value>classpath*:conf/props/${project_env}/db.properties</value>
+                <value>classpath*:${project_env}_config/config.properties</value>
+                <value>classpath*:${project_env}_config/db.properties</value>
             </list>
         </property>
     </bean>
-	
 	
 	<!-- 扫描注解 -->
 	<context:component-scan base-package="com.aipa" >
@@ -40,7 +39,8 @@
 	</context:component-scan>  
 	
 	<!-- db -->
-	<import resource="spring-db.xml"/>
+	<import resource="classpath*:/spring-dao.xml" />
+	
 	<aop:config proxy-target-class="true"/> 
 	
 </beans>

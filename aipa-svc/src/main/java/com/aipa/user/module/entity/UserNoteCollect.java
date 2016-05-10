@@ -1,6 +1,7 @@
 package com.aipa.user.module.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.qy.data.common.dao.annotation.Column;
 import com.qy.data.common.dao.annotation.GeneratedValue;
@@ -35,6 +36,10 @@ public class UserNoteCollect implements Serializable{
 	@Column
 	@RedisField
 	private Long category_id; //帖子种类（根据种类找到帖子在哪张帖子表中）
+	
+	@Column
+	@RedisField
+	private Date create_time = new Date();
 
 	public Long getId() {
 		return id;
@@ -67,5 +72,12 @@ public class UserNoteCollect implements Serializable{
 	public void setCategory_id(Long category_id) {
 		this.category_id = category_id;
 	}
-	
+
+	public Date getCreate_time() {
+		return create_time;
+	}
+
+	public void setCreate_time(Date create_time) {
+		this.create_time = create_time;
+	}
 }

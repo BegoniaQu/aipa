@@ -141,4 +141,7 @@ public interface GenericDao<T extends Serializable, PK> {
      * @return
      */
     int count(T entity, List<AbstractGenericDaoImpl.Expression> expressionConditions, String... conditions);
+    
+    
+    boolean increment(T entity,String prop);
 }

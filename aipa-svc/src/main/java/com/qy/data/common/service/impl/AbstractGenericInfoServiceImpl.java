@@ -252,4 +252,18 @@ public abstract class AbstractGenericInfoServiceImpl<T extends Serializable, PK>
 			String... conditions) {
 		return getDao().count(entity, expressionConditions, conditions);
 	}
+	
+	@Override
+	public void increment(T entity, String prop) {
+		if(entity == null) return;
+		getDao().increment(entity, prop);
+		try {
+			GenericInfoRao<T, PK> rao = getRao();
+			if(rao != null){
+				//TODO
+			}
+		} catch (Exception e) {
+			logger.warn("redis info error",e);
+		}
+	}
 }

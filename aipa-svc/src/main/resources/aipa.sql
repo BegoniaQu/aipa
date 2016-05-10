@@ -6,28 +6,27 @@ create table tb_community_category(
 	name varchar(25),		-- 分类名称
 	descr varchar(100),		-- 描述
 	parent_id int,			-- 父分类ID
-	parent_name varchar(25),-- 父分类名称
 	user_interest_cnt int	-- 用户关注数量
 );
 
--- 用户表:aipa_user
+-- 用户表
 drop table if exists tb_user;
 -- 账号，密码，用户名，头像，性别，年龄，性取向，婚姻状况，所在地，注册时间，关注的社区，收藏的帖子。
 create table tb_user(
 	id int(11)  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	username varchar(25) NOT NULL,
+	username varchar(50) NOT NULL,
 	password varchar(30) NOT NULL,
-	nickname varchar(25),		-- 昵称
+	nickname varchar(50),		-- 昵称
 	head_picture varchar(100),	-- 用户头像
 	sex tinyint,			-- 性别：1-男，2-女
 	sex_switch bit(1),		-- 开关：保密、公开
 	age tinyint,			-- 年龄
 	age_switch bit(1),		-- 开关：保密、公开
-	sex_orient tinyint,			--性取向：1-好男，2-好女，3-双杀，4-无性恋
+	sex_orient tinyint,			-- 性取向：1-好男，2-好女，3-双杀，4-无性恋
 	sex_orient_switch bit(1),	-- 开关：保密、公开
-	marital_status tinyint,			--婚姻情况：1-未婚，2-已婚
+	marital_status tinyint,			-- 婚姻情况：1-未婚，2-已婚
 	marital_status_switch bit(1),	-- 开关：保密、公开
-	location varchar(25),		--所在地
+	location varchar(25),		-- 所在地
 	create_time datetime NOT NULL,
 	update_time datetime,
 	latest_login_time datetime,			-- 最近登录时间
@@ -40,66 +39,113 @@ CREATE INDEX i_user_username ON tb_user (username);
 -- 用户收藏表
 drop table if exists tb_user_note_collect;
 create table tb_user_note_collect(
-	id int(11)  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	id int(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	user_id int(11),	-- 用户ID
 	note_id int(11),	-- 帖子ID
-	category_id int(11),--帖子种类（根据种类找到帖子在哪张帖子表中）
+	category_id int(11),-- 帖子种类（根据种类找到帖子在哪张帖子表中）
+	create_time datetime NOT NULL
 );
 
 -- 用户关注社区分类表
 drop table if exists tb_user_category_interest;
 create table tb_user_category_interest(
-	id int(11)  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	id int(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	user_id int(11),	-- 用户ID
 	category_id int(11)	-- 种类ID
 );
 
--- 需药写一个算法对帖子表进行分表，根据子种类分表
--- 每个子种类一张帖子表
 
--- 帖子表（命名方式根据算法得来）
+-- 帖子表,帖子数量剧增时分表，根据帖子ID除余法分100张表
 drop table if exists tb_community_note;
 create table tb_community_note(
-	id bigint(20)  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	title varchar(255),	-- 标题
-	content text,		-- 内容
+	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	title varchar(255),		-- 标题
+	content text,			-- 内容
 	pictures varchar(255),	-- 图片,逗号分隔
 	user_id int(11),		-- 发布人ID
 	create_time datetime,   -- 发布时间
 	category_id int(11),	-- 种类ID
-	scan_count int,		-- 浏览人数
-	comment_count int,	-- 评论数
-	collect_count int,	-- 收藏数
-	good_count int		-- 点赞数
-);
-
-
--- 帖子评论表（也是基于帖子种类进行分表，分表规则痛帖子表的分表规则一样）
-drop table if exists aipa_note_comment;
-create table aipa_note_comment(
-	id int  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	note_id int,			-- 帖子ID
-	commented_id int		-- 被回复的记录ID
-	commented_user_id int,		-- 被回复的用户ID
-	comment varchar(255),		-- 评论内容
-	comment_user_id int,		-- 评论用户ID
-	comment_time datetime,		-- 评论时间
-	good_count int			-- 点赞数
+	deleted bit(1)			-- 是否删除
 	
 );
 
-###############################不要了#######################################
--- 创建索引
-CREATE INDEX i_note_comment ON aipa_note_comment (note_id); -- 快速搜索
-
--- 评论回复表
-drop table if exists aipa_note_comment_reply;
-create table aipa_note_comment_reply(
-	id int  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	comment_id int,			-- 评论ID
-	reply_comment varchar(255),	-- 回复评论
-	reply_user_id int,		-- 回复人ID
-	reply_comment_time datetime,	-- 回复时间
-	is_boss bit(1)			-- 是否帖主回复
+-- 帖子统计表
+drop table if exists tb_note_counter;
+create table tb_note_counter(
+	note_id bigint(20) primary key,  -- 帖子ID
+	scan_count tinyint,		-- 浏览次数
+	comment_count tinyint	-- 评论数
+	
+)
+	
+-- 点赞表
+drop table if exists tb_good_click;
+create table tb_good_click(
+	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	user_id int(11), 	-- 用户ID
+	good_id bigint(20), -- 点赞对象ID
+	good_type tinyint   -- 针对：1-帖子，2-评论 --当有索引表后，此字段其实没什么用了
 );
-############################################################################
+
+
+-- 帖子评论回复表
+drop table if exists tb_community_note_comment;
+create table tb_community_note_comment(
+	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	note_id bigint(20),		-- 帖子ID
+	root_comment_id bigint(20),	-- 评论根ID
+	commented_id bigint(20),	-- 被回复的记录ID
+	content varchar(255),	-- 评论内容
+	content_user_id int(11),-- 评论人ID
+	create_time datetime,	-- 评论时间
+	deleted bit(1) 			-- 是否删除
+);
+
+
+
+
+------------------------------------------------------------------------
+------------------所有索引表都是基于redis存在时才建立的----------------------------
+------------------------------------------------------------------------
+-- 用户量大时，添加帖子评论索引表
+drop table if exists tb_note_comment_index(
+	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	indexId varchar(15) NOT NULL, --noteId
+	indexType tinyint NOT NULL, -- 1-评论,2-回复
+	comment_id varchar(30) NOT NULL,
+	subScore bigint(20),  -- 打分
+	createTime datetime   -- subScore is null时，根据createTime打分排序
+);
+
+
+
+
+
+-- 用户量大时，添加帖子索引表，tb_user_note_index 要分表，根据indexId hash 分表
+drop table if exists tb_user_note_index;
+create table tb_user_note_index(
+	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	indexId varchar(15) NOT NULL,
+	indexType tinyint NOT NULL, -- 根据用户id索引帖子：user2Note(1),根据分类id索引帖子：category2Note(2)
+	noteId varchar(20) NOT NULL,
+	subScore bigint(20),  -- 打分
+	createTime datetime   -- subScore is null时，根据createTime打分排序
+);
+
+-- 用户量大时，添加点赞索引表
+drop table if exists tb_good_click_index;
+create table tb_good_click_index(
+	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	indexId varchar(30) NOT NULL, 
+	indexType tinyint NOT NULL, -- 1-帖子，2-评论
+	userId varchar(15) NOT NULL,
+	subScore bigint(20),  		-- 打分
+	createTime datetime   		-- subScore is null时，根据createTime打分排序
+);
+
+-- 根据帖子ID获取一级评论列表（分页），评论下的二级回复列表
+
+
+
+
+

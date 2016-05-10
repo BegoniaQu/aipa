@@ -6,7 +6,7 @@ public class AipaTokenUtil {
 	private static final long mod = 10000000000l;
 	private static final long second = 1000l;
 	private static final String keyStr = "aipa20160425ququ";
-	public static final long expired = 86400000;
+	public static final long expired = 3600000; //one hour
 	
 	
 	

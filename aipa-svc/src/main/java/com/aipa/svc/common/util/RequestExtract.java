@@ -33,9 +33,10 @@ public class RequestExtract {
 	private static final String REQUEST_PARAM_PREVIOUS_TOKEN = "pt";
 	private static final String REQUEST_PARAM_ASC = "asc";
 	private static final String REQUEST_PARAM_USER_NAME = "user_name";
-	private static final String REQUEST_PARAM_USER_ID = "user_id";
+	private static final String REQUEST_PARAM_USER_ID = "uid";
 	public static final String REQUEST_PARAM_USER_TOKEN = "tk";
 	private static final String REQUEST_PARAM_SIGN = "sign";
+	
 	//private static final String REQUEST_PARAM_IDS = "ids";
 	
 //	public static final String REQUEST_ATTR_USER_NAME = AuthorizationFilter.KEY_USER_NAME;
@@ -44,6 +45,13 @@ public class RequestExtract {
 	
 	public static final int DEFAULT_PAGE_SIZE = 10;
 	public static final int DEFAULT_PAGE_NUM = 0;
+	
+	public static Long getUID(HttpServletRequest request){
+		Long uid = ParameterTool.getAttrLong(request, REQUEST_PARAM_USER_ID);
+		request.removeAttribute(REQUEST_PARAM_USER_ID);
+		return uid;
+	}
+	
 	
 	/**
 	 * user_name必须在参数中存在

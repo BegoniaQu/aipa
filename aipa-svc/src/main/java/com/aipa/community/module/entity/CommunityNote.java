@@ -46,21 +46,7 @@ public class CommunityNote implements Serializable{
 	
 	@Column
 	@RedisField
-	private int scan_count; 	//浏览人数
-	
-	@Column
-	@RedisField
-	private int comment_count; //评论数
-	
-	@Column
-	@RedisField
-	private int collect_count; //收藏数
-	
-	@Column
-	@RedisField
-	private int good_count;    //点赞数
-	
-	
+	private Boolean deleted = false;  //是否删除
 
 	public Long getId() {
 		return id;
@@ -118,36 +104,12 @@ public class CommunityNote implements Serializable{
 		this.category_id = category_id;
 	}
 
-	public int getScan_count() {
-		return scan_count;
+	public Boolean getDeleted() {
+		return deleted;
 	}
 
-	public void setScan_count(int scan_count) {
-		this.scan_count = scan_count;
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
-	public int getComment_count() {
-		return comment_count;
-	}
-
-	public void setComment_count(int comment_count) {
-		this.comment_count = comment_count;
-	}
-
-	public int getCollect_count() {
-		return collect_count;
-	}
-
-	public void setCollect_count(int collect_count) {
-		this.collect_count = collect_count;
-	}
-
-	public int getGood_count() {
-		return good_count;
-	}
-
-	public void setGood_count(int good_count) {
-		this.good_count = good_count;
-	}
-	
 }

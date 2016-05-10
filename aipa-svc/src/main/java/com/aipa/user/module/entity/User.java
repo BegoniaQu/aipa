@@ -47,7 +47,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Boolean sex_switch;
+	private Boolean sex_switch = false;
 	
 	@Column
 	@RedisField
@@ -55,7 +55,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Boolean age_switch; //true:公开，false:关闭
+	private Boolean age_switch = false; //true:公开，false:关闭
 	
 	@Column
 	@RedisField
@@ -63,7 +63,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Boolean sex_orient_switch;
+	private Boolean sex_orient_switch = false;
 	
 	@Column
 	@RedisField
@@ -71,7 +71,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Boolean marital_status_switch;
+	private Boolean marital_status_switch = false;
 	
 	@Column
 	@RedisField
@@ -79,7 +79,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Date create_time;
+	private Date create_time = new Date();
 	
 	@Column
 	@RedisField

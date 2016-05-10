@@ -36,9 +36,6 @@ public class CommunityCategory implements Serializable{
 	@RedisField
 	private Long parent_id;  	//父分类ID
 	
-	@Column
-	@RedisField
-	private String parent_name;    //父分类名称
 	
 	@Column
 	@RedisField
@@ -75,5 +72,4 @@ public class CommunityCategory implements Serializable{
 	public void setUser_interest_cnt(int user_interest_cnt) {
 		this.user_interest_cnt = user_interest_cnt;
 	}
-	
 }

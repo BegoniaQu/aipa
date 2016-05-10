@@ -35,5 +35,4 @@ public class CommunityCategoryServiceImpl extends AbstractGenericInfoServiceImpl
 		return communityCategoryRao;
 	}
 
-	
 }

@@ -65,4 +65,7 @@ public interface GenericInfoService <T, PK>{
 	public int count(T entity, List<Expression> expressionConditions, String... conditions);
 	
 	public void fill(T t);
+	
+	
+	public void increment(T entity,String prop);
 }

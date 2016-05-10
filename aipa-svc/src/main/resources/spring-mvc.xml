@@ -12,23 +12,65 @@
 
 	<!-- Enable annotation-based controllers using @Controller annotations -->
 	
-	<bean
-		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
 
-	<bean
-		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" >
-		
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" >
+	<!--  用这个配置，然后 方法上@responseBody ，就能返回json数据-->
+	<!-- 
 	<property name="messageConverters">
-		<list> <!--  用这个配置，然后 方法上@responseBody ，就能返回json数据-->
+		<list> 
 			<ref bean="mappingJacksonHttpMessageConverter"/>
 		</list>
 	</property>
-	
+	 -->
 	</bean>
 	
 	<!-- global exception -->
 	<bean class="com.aipa.svc.common.exception.AipaServerExceptionHandlerResolver" />
-
+	
+	<!-- result wrapper interceptor -->
+	<mvc:interceptors>
+		<bean class="com.aipa.svc.common.resultwrapper.ResultWrapper" />
+	</mvc:interceptors>
+	
+	<!-- 
+	1. spring检查setFavorPathExtension(boolean) ，如果这个属性为true（默认为true），检查请求的后缀名，来返回一种 mediaType ，而后缀名和mediaType是通过ContentNegotiatingViewResolver  配置中的mediaTypes指定的。
+	2.spring检查 setFavorParameter(boolean) 这个属性是否为true（默认为false），而如果你打开这个属性，那么默认的参数名应为 format ，spring通过你传过去的参数决定返回哪种mediaType。 
+	3.如果前两步没有找到合适的mediaType，则使用defaultViews设置的默认值显示。
+	4.如果前三步都没有找到合适的mediaType，并且 ignoreAcceptHeader 这个属性为false（默认为false），spring则根据请求头里面设置的ContentType来找适合的mediaType。
+	 -->
+	<!-- 用这个要指定mediaTypes 中的 后缀 -->
+	<bean  class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<property name="favorPathExtension" value="true" />
+	   <!-- 这里是否忽略掉accept header，默认就是false -->
+	   <property name="ignoreAcceptHeader" value="false" />   
+	   <!-- 如果所有的mediaType都没匹配上，就会使用defaultContentType -->
+	   <property name="defaultContentType" value="application/json" />   
+	   
+	   <property name="mediaTypes">    
+		    <map>     <!-- 就是请求连接中:*json 、*xml  为后缀-->
+			     <entry key="json" value="application/json" />      
+		    </map>    
+	   </property>   
+	 	 <!-- 默认使用MappingJacksonJsonView生成jsonview-->
+	   <property name="defaultViews">    
+	    <list>     
+	     <bean  class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">        
+	         <property  name="extractValueFromSingleKeyModel" value="true" />     
+	      </bean>        
+	      <!--  
+	      <bean  class="org.springframework.web.servlet.view.xml.MarshallingView">      
+	       <property name="marshaller">        
+	        <bean  class="org.springframework.oxm.xstream.XStreamMarshaller" />        
+	      </property>   
+	      </bean>  
+	       -->       
+	     </list>     
+	    </property>  
+	    
+	</bean>
+	
 	
 	<bean id="mappingJacksonHttpMessageConverter"
 		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">

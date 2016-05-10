@@ -53,6 +53,8 @@ public class AbstractGenericDaoImpl<T extends Serializable, PK> extends BaseName
 	protected static final String UPDATE_BY_ENTITY_FORMAT="update %s set %s where %s";
 	protected static final String DELETE_BY_ID_FORMAT="delete from %s where %s=:%s";
 	protected static final String DELETE_BY_ENTITY_FORMAT="delete from %s where %s";
+	protected static final String INCREMENT_BY_ID_FORMAT = "update %s set %s = %s + 1 where %s=:%s";
+	
 	protected Map<String, String> propNameToColumnName;
 	protected Map<String, Field> columnNameToField;
 	protected Map<String, Method> columnNameToMethod;
@@ -513,6 +515,24 @@ public class AbstractGenericDaoImpl<T extends Serializable, PK> extends BaseName
         return this.jdbcTemplate.query(sql, params, mapper);
 	}
 
+	@Override
+	public boolean increment(T entity, String prop) {
+		if(StringUtils.isEmptyOrWhitespaceOnly(idName)){
+			throw new GenericDaoException(entityClass, idName + " is empty! t=" + JsonUtil.getJsonFromObject(entity));
+		}
+		Map<String,Object> paramMap = new HashMap<>();
+		try {
+			idField.setAccessible(true);
+			paramMap.put(idName, idField.get(entity));
+		} catch (Exception e) {
+			throw new GenericDaoException(entityClass, idName + " error! t=" + JsonUtil.getJsonFromObject(entity));
+		}
+		String sql = String.format(INCREMENT_BY_ID_FORMAT, getTabName(entity), prop, prop, idName, idName);
+		return jdbcTemplate.update(sql, paramMap) > 0;
+	}
+	
+	
+	
 	protected void buildCondition(T entity, List<Expression> expressionConditions,
 			Map<String, Object> params, StringBuilder builder,
 			String... conditions) {
@@ -874,4 +894,5 @@ public class AbstractGenericDaoImpl<T extends Serializable, PK> extends BaseName
 			this.value = value;
 		}
 	}
+
 }

@@ -109,6 +109,19 @@ public final class ParameterTool {
 		return l;
 	}
 
+	public static Long getParameterLong(HttpServletRequest request, String name) {
+		try {
+			String value = request.getParameter(name);	
+			if(StringUtil.isEmpty(value)){
+				throw new InvalidRequestRuntimeException("param:" + name + " not exist");
+			}
+			return Long.valueOf(value);	
+		} catch (RuntimeException e) {
+			throw new InvalidRequestRuntimeException("request parameter format error, ", name + " format error", e);
+		}
+	}
+
+	
 	public static Float getParameterFloat(HttpServletRequest request,
 			String name, Float defaultValue) {
 		Float f = defaultValue;
@@ -172,6 +185,16 @@ public final class ParameterTool {
 		}
 
 		return s;
+	}
+	
+	public static Long getAttrLong(HttpServletRequest request,
+			String name) {
+		Object obj = request.getAttribute(name);
+		if(obj == null){
+			throw new InvalidRequestRuntimeException("param:" + name + " not exist");
+		}
+		Long l = LongConvert.getConvert().getValue(obj);
+		return l;
 	}
 	
 	public static Long getAttrLong(HttpServletRequest request,

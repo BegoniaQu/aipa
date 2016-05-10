@@ -12,15 +12,15 @@ public class BaseNamedParamDaoImpl {
 
 	protected NamedParameterJdbcTemplate jdbcTemplate;
 	
-	protected NamedParameterJdbcTemplate jdbcTemplateReadOnly;
+	//protected NamedParameterJdbcTemplate jdbcTemplateReadOnly;
 
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 	
-	public void setDataSourceReadOnly(DataSource dataSource) {
-		this.jdbcTemplateReadOnly = new NamedParameterJdbcTemplate(dataSource);
-	}
+//	public void setDataSourceReadOnly(DataSource dataSource) {
+//		this.jdbcTemplateReadOnly = new NamedParameterJdbcTemplate(dataSource);
+//	}
 	
 	protected int getTableIndex(String indexName, int mod){
 
