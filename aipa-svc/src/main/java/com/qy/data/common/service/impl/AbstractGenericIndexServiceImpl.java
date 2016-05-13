@@ -40,7 +40,12 @@ public abstract class AbstractGenericIndexServiceImpl<T extends GenericIndex>
 		}
 		fillScore(t);
 		getDao().save(t);
-		
+		///////////////////////
+		if(getRao() == null){
+			logger.error("add: rao obj is null,please check");
+			return;
+		}
+		///////////////////////
 		if(getRao().zadd(t) == null){
 			//recover(t);//dao先插入数据，recover会完成本次的rao的zadd。
 		} else if (getRao().isLimited() && r.nextInt(getRao().getLimit()*TRUNCATE_PERCENT/100) < 2) { 
@@ -74,6 +79,12 @@ public abstract class AbstractGenericIndexServiceImpl<T extends GenericIndex>
 	public void del(T t) {
 		if(t == null) return;
 		getDao().delete(t, null, t.getConditionsOfQueryUniqueRecord());
+		///////////////////////
+		if(getRao() == null){
+		logger.error("del: rao obj is null,please check");
+		return;
+		}
+		///////////////////////
 		getRao().zrem(t);
 	}
 
@@ -318,6 +329,12 @@ public abstract class AbstractGenericIndexServiceImpl<T extends GenericIndex>
 	public void delKey(T t) {
 		if(t == null) return;
 		getDao().delete(t, null, t.getConditionsOfQueryAll());
+		///////////////////////
+		if(getRao() == null){
+		logger.error("delKey: rao obj is null,please check");
+		return;
+		}
+		///////////////////////
 		getRao().delKey(t);
 	}
 

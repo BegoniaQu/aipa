@@ -9,21 +9,17 @@ import com.qy.data.common.rao.annotation.RedisField;
 import com.qy.data.common.rao.annotation.RedisId;
 
 @Table(name="tb_note_counter")
-public class NoteCounter implements Serializable{
+public class CommunityNoteCounter implements Serializable{
 
 	private static final long serialVersionUID = 7285217579208028597L;
 	
 	@Id
 	@RedisId
-	private Long note_id ;  		//帖子ID
+	private Long note_id;  		//帖子ID
 	
 	@Column
 	@RedisField
 	private Integer scan_count;		//浏览次数
-	
-	@Column
-	@RedisField
-	private Integer comment_count;  //评论数
 	
 	
 	public Long getNote_id() {
@@ -38,13 +34,5 @@ public class NoteCounter implements Serializable{
 	public void setScan_count(Integer scan_count) {
 		this.scan_count = scan_count;
 	}
-	public Integer getComment_count() {
-		return comment_count;
-	}
-	public void setComment_count(Integer comment_count) {
-		this.comment_count = comment_count;
-	}
-	
-	
 	
 }

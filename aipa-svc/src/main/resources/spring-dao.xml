@@ -78,4 +78,15 @@
 	
 	<bean id="communityCategoryDao" class="com.aipa.community.module.dao.impl.CommunityCategoryDaoImpl" parent="basicBaseDao" />
 	<bean id="communityNoteDao" class="com.aipa.community.module.dao.impl.CommunityNoteDaoImpl" parent="basicBaseDao" />
+	
+	<bean id="goodClickDao" class="com.aipa.community.module.dao.impl.GoodClickDaoImpl" parent="basicBaseDao" />
+	<bean id="communityNoteCommentDao" class="com.aipa.community.module.dao.impl.CommunityNoteCommentDaoImpl" parent="basicBaseDao" />
+	<bean id="communityNoteCounterDao" class="com.aipa.community.module.dao.impl.CommunityNoteCounterDaoImpl" parent="basicBaseDao" />
+	
+	<!-- index -->
+	<bean id="goodClickIndexDao" class="com.aipa.community.module.dao.impl.GoodClickIndexDaoImpl" parent="basicBaseDao" />
+	<bean id="communityNoteCommentIndexDao" class="com.aipa.community.module.dao.impl.CommunityNoteCommentIndexDaoImpl" parent="basicBaseDao" />
+	<bean id="communityNoteCounterIndexDao" class="com.aipa.community.module.dao.impl.CommunityNoteIndexDaoImpl" parent="basicBaseDao" />
+	<bean id="userNoteCollectIndexDao" class="com.aipa.user.module.dao.impl.UserNoteCollectIndexDaoImpl" parent="basicBaseDao" />
+	
 </beans>

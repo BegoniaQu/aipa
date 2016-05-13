@@ -10,4 +10,6 @@ public class LenConstant {
 	
 	public static final int pwdMinLen = 6;
 	public static final int pwdMaxLen = 15;
+	
+	public static final int listContentLen = 38;
 }

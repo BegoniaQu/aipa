@@ -25,7 +25,7 @@ public class GoodClick implements Serializable{
 	
 	@Column
 	@RedisField
-	private Long good_id;  		//点赞对象ID
+	private Long object_id;  		//点赞对象ID
 	
 	@Column
 	@RedisField
@@ -44,11 +44,11 @@ public class GoodClick implements Serializable{
 	public void setUser_id(Long user_id) {
 		this.user_id = user_id;
 	}
-	public Long getGood_id() {
-		return good_id;
+	public Long getObject_id() {
+		return object_id;
 	}
-	public void setGood_id(Long good_id) {
-		this.good_id = good_id;
+	public void setObject_id(Long object_id) {
+		this.object_id = object_id;
 	}
 	public Integer getGood_type() {
 		return good_type;

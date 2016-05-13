@@ -11,7 +11,7 @@ import com.qy.data.common.rao.annotation.RedisField;
 import com.qy.data.common.rao.annotation.RedisId;
 
 @Table(name="tb_community_note_comment")
-public class NoteComment implements Serializable{
+public class CommunityNoteComment implements Serializable{
 
 	private static final long serialVersionUID = 1961561803718744074L;
 

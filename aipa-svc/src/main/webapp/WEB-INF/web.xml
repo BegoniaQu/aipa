@@ -57,7 +57,7 @@
 	<init-param>
 		<param-name>excludedUrls</param-name>
 		<param-value>
-			user/scan.ap,
+			scan.ap,
 			sign/signUp.ap,
 			sign/signIn.ap
 		</param-value>

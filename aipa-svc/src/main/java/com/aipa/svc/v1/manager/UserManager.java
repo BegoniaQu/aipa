@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.aipa.community.module.entity.CommunityCategory;
 import com.aipa.community.module.entity.CommunityNote;
 import com.aipa.community.module.service.CommunityCategoryService;
+import com.aipa.community.module.service.CommunityNoteIndexService;
 import com.aipa.community.module.service.CommunityNoteService;
 import com.aipa.svc.common.util.AipaTokenUtil;
 import com.aipa.svc.common.util.DateUtils;
@@ -21,11 +22,15 @@ import com.aipa.svc.common.util.PagedListRespData;
 import com.aipa.svc.common.vo.CollectedNoteBean;
 import com.aipa.svc.common.vo.InterestedCategoryBean;
 import com.aipa.svc.common.vo.UserInfoBean;
+import com.aipa.svc.common.vo.UserInfoParam;
 import com.aipa.svc.v1.converter.BeanConverter;
 import com.aipa.user.module.entity.User;
 import com.aipa.user.module.entity.UserCategoryInterest;
 import com.aipa.user.module.entity.UserNoteCollect;
+import com.aipa.user.module.entity.UserNoteCollectIndex;
+import com.aipa.user.module.entity.UserNoteCollectIndexType;
 import com.aipa.user.module.service.UserCategoryInterestService;
+import com.aipa.user.module.service.UserNoteCollectIndexService;
 import com.aipa.user.module.service.UserNoteCollectService;
 import com.aipa.user.module.service.UserService;
 
@@ -51,6 +56,13 @@ public class UserManager {
 	
 	@Resource
 	private CommunityCategoryService communityCategoryService;
+	
+	@Resource
+	private CommunityNoteIndexService communityNoteIndexService;
+	
+	@Resource
+	private UserNoteCollectIndexService userNoteCollectIndexService;
+	
 	
 	/**
 	 * 根据主键uid获取用户信息
@@ -80,7 +92,47 @@ public class UserManager {
 		return beanConverter.convert2ForOthers(user);
 	}
 	
-	public void updateUser(User user){
+	public void updateUser(UserInfoParam uip){
+		User user = getUser(uip.getUid());
+		//check
+		if(uip.getAge() != null){
+			Short ageShort = Short.parseShort(String.valueOf(uip.getAge()));
+			user.setAge(ageShort);
+		}
+		if(uip.getAge_switch() != null){
+			user.setAge_switch(uip.getAge_switch());
+		}
+		if(uip.getHead_picture() != null){
+			user.setHead_picture(uip.getHead_picture()); //TODO 需要截取,以及是否是七牛的图片
+		}
+		if(uip.getLocation() != null){
+			user.setLocation(uip.getLocation());
+		}
+		if(uip.getMarital_status() != null){
+			Short ms = Short.parseShort(String.valueOf(uip.getMarital_status())); 
+			user.setMarital_status(ms);
+		}
+		if(uip.getMarital_status_switch() != null){
+			user.setMarital_status_switch(uip.getMarital_status_switch() );
+		}
+		if(uip.getNickname() != null){
+			user.setNickname(uip.getNickname());
+		}
+		if(uip.getSex() != null){
+			Short sexShort = Short.parseShort(String.valueOf(uip.getSex())); 
+			user.setSex(sexShort);
+		}
+		if(uip.getSex_switch() != null){
+			user.setSex_switch(uip.getSex_switch());
+		}
+		if(uip.getSex_orient() != null){
+			Short so = Short.parseShort(String.valueOf(uip.getSex_orient())); 
+			user.setSex_orient(so);
+		}
+		if(uip.getSex_orient_switch() != null){
+			user.setSex_orient_switch(uip.getSex_orient_switch());
+		}
+		user.setUpdate_time(new Date());
 		this.userService.update(user);
 	}
 	
@@ -153,12 +205,14 @@ public class UserManager {
 				CommunityCategory category = this.communityCategoryService.findById(i.getCategory_id());
 				bean.setCategory_name(category.getName());
 				CommunityNote note = this.communityNoteService.findById(i.getNote_id());
-				bean.setContent(note.getContent());
+				bean.setContent(note.getContent() == null ? "":note.getContent());
 				bean.setNote_id(note.getId());
-				bean.setCreate_time(DateUtils.getDateStr(note.getCreate_time(), DateUtils.formalPattern));
-				bean.setTitle(note.getTitle());
-				String []pic = note.getPictures().split(",");
-				bean.setPictures(Arrays.asList(pic));
+				bean.setTime(DateUtils.getDateStr(note.getCreate_time(), DateUtils.formalPattern));
+				bean.setTitle(note.getTitle() == null ? "":note.getTitle());
+				if(note.getPictures() != null){
+					String []pic = note.getPictures().split(",");
+					bean.setPictures(Arrays.asList(pic));
+				}
 				list.add(bean);
 			}
 		}
@@ -172,7 +226,6 @@ public class UserManager {
 	 */
 	public void collectNote(Long userId,Long noteId){
 		CommunityNote note = this.communityNoteService.findById(noteId);
-		
 		if(note != null){
 			UserNoteCollect queryEntity = new UserNoteCollect();
 			queryEntity.setUser_id(userId);
@@ -184,6 +237,16 @@ public class UserManager {
 				t.setNote_id(noteId);
 				t.setUser_id(userId);
 				this.userNoteCollectService.add(t);
+				//增加索引note2collectedUser
+				UserNoteCollectIndex index = new UserNoteCollectIndex();
+				index.setIndexId(String.valueOf(noteId.longValue()));
+				index.setIndexType(UserNoteCollectIndexType.note2collectedUser.getValue());
+				index.setCollectId(t.getId());
+				this.userNoteCollectIndexService.add(index);
+				//增加索引user2collectedNote
+				index.setIndexId(String.valueOf(userId.longValue()));
+				index.setIndexType(UserNoteCollectIndexType.user2collectedNote.getValue());
+				this.userNoteCollectIndexService.add(index);
 			}else{
 				log.warn("noteId={} already collected",new Object[]{noteId});
 			}
@@ -196,8 +259,22 @@ public class UserManager {
 	 * 移除收藏的帖子
 	 * @param id
 	 */
-	public void removeCollectedNote(Long id){
-		this.userNoteCollectService.del(id);
+	public void removeCollectedNote(Long uid,Long id){
+		UserNoteCollect entity = this.userNoteCollectService.findById(id);
+		if(entity != null&&uid.longValue() == entity.getUser_id().longValue()){
+			this.userNoteCollectService.del(id);
+			//删除索引
+			//删除索引note2collectedUser
+			UserNoteCollectIndex index = new UserNoteCollectIndex();
+			index.setCollectId(id);
+			index.setIndexId(String.valueOf(entity.getNote_id().longValue()));
+			index.setIndexType(UserNoteCollectIndexType.note2collectedUser.getValue());
+			this.userNoteCollectIndexService.del(index);
+			//删除索引user2collectedNote
+			index.setIndexId(String.valueOf(uid.longValue()));
+			index.setIndexType(UserNoteCollectIndexType.user2collectedNote.getValue());
+			this.userNoteCollectIndexService.del(index);
+		}
 	}
 	
 	/**

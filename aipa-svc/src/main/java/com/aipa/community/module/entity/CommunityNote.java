@@ -47,6 +47,10 @@ public class CommunityNote implements Serializable{
 	@Column
 	@RedisField
 	private Boolean deleted = false;  //是否删除
+	
+	@Column
+	@RedisField
+	private Boolean anonymous = false; //是否匿名发布
 
 	public Long getId() {
 		return id;
@@ -112,4 +116,12 @@ public class CommunityNote implements Serializable{
 		this.deleted = deleted;
 	}
 
+	public Boolean getAnonymous() {
+		return anonymous;
+	}
+
+	public void setAnonymous(Boolean anonymous) {
+		this.anonymous = anonymous;
+	}
+	
 }

@@ -1,5 +1,6 @@
 package com.aipa.svc.common.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CollectedNoteBean {
@@ -8,9 +9,9 @@ public class CollectedNoteBean {
 	private Long note_id;
 	private String title;
 	private String content; 	//内容
-	private List<String> pictures;
+	private List<String> pictures = new ArrayList<>();
 	private String category_name;
-	private String create_time;
+	private String time;
 	
 	public Long getNote_id() {
 		return note_id;
@@ -42,17 +43,16 @@ public class CollectedNoteBean {
 	public void setCategory_name(String category_name) {
 		this.category_name = category_name;
 	}
-	public String getCreate_time() {
-		return create_time;
-	}
-	public void setCreate_time(String create_time) {
-		this.create_time = create_time;
-	}
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
+	}
 }

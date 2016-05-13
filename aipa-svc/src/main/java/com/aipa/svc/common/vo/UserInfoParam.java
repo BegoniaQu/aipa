@@ -2,22 +2,23 @@ package com.aipa.svc.common.vo;
 
 public class UserInfoParam {
 
+	private Long uid;
 	
-	private	 Integer age;
-	private	 Boolean age_switch;
+	private	Integer age;
+	private	Boolean age_switch;
 	
-	private  String nickname;
-	private  String head_picture;
+	private String nickname;
+	private String head_picture;
 	
-	private  Integer sex;
-	private  Boolean sex_switch;
+	private Integer sex;
+	private Boolean sex_switch;
 	
-	private  Integer sex_orient;
-	private  Boolean sex_orient_switch;
+	private Integer sex_orient;
+	private Boolean sex_orient_switch;
 	
-	private  Integer marital_status;
-	private  Boolean marital_status_switch;
-	private  String location;
+	private Integer marital_status;
+	private Boolean marital_status_switch;
+	private String location;
 	
 	
 	
@@ -87,5 +88,10 @@ public class UserInfoParam {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	
+	public Long getUid() {
+		return uid;
+	}
+	public void setUid(Long uid) {
+		this.uid = uid;
+	}
 }
