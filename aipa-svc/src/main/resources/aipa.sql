@@ -1,6 +1,6 @@
 
 -- 用户表
-drop table if exists tb_user;
+-- drop table if exists tb_user;
 -- 账号，密码，用户名，头像，性别，年龄，性取向，婚姻状况，所在地，注册时间，关注的社区，收藏的帖子。
 create table tb_user(
 	id int(11)  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -31,7 +31,7 @@ CREATE INDEX i_user_username ON tb_user (username);
 
 
 -- 社区分类
-drop table if exists tb_community_category;
+-- drop table if exists tb_community_category;
 create table tb_community_category(
 	id int(11)  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	name varchar(25),		-- 分类名称
@@ -42,7 +42,7 @@ create table tb_community_category(
 
 
 -- 用户收藏表
-drop table if exists tb_user_note_collect;
+-- drop table if exists tb_user_note_collect;
 create table tb_user_note_collect(
 	id int(11)  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	user_id int(11),	-- 用户ID
@@ -52,7 +52,7 @@ create table tb_user_note_collect(
 );
 
 -- 用户关注社区分类表
-drop table if exists tb_user_category_interest;
+-- drop table if exists tb_user_category_interest;
 create table tb_user_category_interest(
 	id int(11)  UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	user_id int(11),	-- 用户ID
@@ -61,7 +61,7 @@ create table tb_user_category_interest(
 
 
 -- 帖子表,帖子数量剧增时分表，根据帖子ID除余法分100张表
-drop table if exists tb_community_note;
+-- drop table if exists tb_community_note;
 create table tb_community_note(
 	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	title varchar(255),		-- 标题
@@ -76,7 +76,7 @@ create table tb_community_note(
 );
 
 -- 帖子统计表
-drop table if exists tb_community_note_counter;
+-- drop table if exists tb_community_note_counter;
 create table tb_community_note_counter(
 	note_id bigint(20) primary key,  -- 帖子ID
 	scan_count tinyint		-- 浏览次数
@@ -84,7 +84,7 @@ create table tb_community_note_counter(
 	
 	
 -- 点赞表
-drop table if exists tb_good_click;
+-- drop table if exists tb_good_click;
 create table tb_good_click(
 	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	user_id int(11), 	-- 用户ID
@@ -94,7 +94,7 @@ create table tb_good_click(
 
 
 -- 帖子评论回复表
-drop table if exists tb_community_note_comment;
+-- drop table if exists tb_community_note_comment;
 create table tb_community_note_comment(
 	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	note_id bigint(20),		-- 帖子ID
@@ -107,7 +107,7 @@ create table tb_community_note_comment(
 );
 
 -- 帖子举报投诉表
-drop table if exists tb_note_report;
+-- drop table if exists tb_note_report;
 create table tb_note_report(
 	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	note_id bigint(20),		-- 帖子ID
@@ -120,7 +120,7 @@ create table tb_note_report(
 -- ---------------- 所有索引表都是基于redis存在时才建立的 ----------------------------
 
 -- 用户量大时，添加帖子评论索引表
-drop table if exists tb_community_note_comment_index;
+-- drop table if exists tb_community_note_comment_index;
 create table tb_community_note_comment_index(
 	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	indexId varchar(30) NOT NULL, -- noteId、评论ID
@@ -131,7 +131,7 @@ create table tb_community_note_comment_index(
 );
 
 -- 用户量大时，添加帖子索引表，tb_user_note_index 要分表，根据indexId hash 分表
-drop table if exists tb_community_note_index;
+-- drop table if exists tb_community_note_index;
 create table tb_community_note_index(
 	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	indexId varchar(30) NOT NULL,
@@ -142,7 +142,7 @@ create table tb_community_note_index(
 );
 
 -- 用户量大时，添加点赞索引表
-drop table if exists tb_good_click_index;
+-- drop table if exists tb_good_click_index;
 create table tb_good_click_index(
 	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	indexId varchar(30) NOT NULL, -- 帖子ID、评论ID
@@ -153,7 +153,7 @@ create table tb_good_click_index(
 );
 
 -- 用户收藏索引表
-drop table if exists tb_user_note_collect_index;
+-- drop table if exists tb_user_note_collect_index;
 create table tb_user_note_collect_index(
 	id bigint(20) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	indexId varchar(30) NOT NULL, -- 帖子ID、用户ID

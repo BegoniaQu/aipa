@@ -6,7 +6,7 @@ import java.util.List;
 public class CommunityCommentDetailBean {
 
 	private Long comment_user_id;
-	private String comment_user_heapic;
+	//private String comment_user_heapic;
 	private String comment_user_name;
 	
 	private Long comment_id;
@@ -21,12 +21,12 @@ public class CommunityCommentDetailBean {
 	public void setComment_user_id(Long comment_user_id) {
 		this.comment_user_id = comment_user_id;
 	}
-	public String getComment_user_heapic() {
-		return comment_user_heapic;
-	}
-	public void setComment_user_heapic(String comment_user_heapic) {
-		this.comment_user_heapic = comment_user_heapic;
-	}
+//	public String getComment_user_heapic() {
+//		return comment_user_heapic;
+//	}
+//	public void setComment_user_heapic(String comment_user_heapic) {
+//		this.comment_user_heapic = comment_user_heapic;
+//	}
 	public String getComment_user_name() {
 		return comment_user_name;
 	}

@@ -5,4 +5,5 @@ import com.qy.data.common.service.GenericInfoService;
 
 public interface UserService extends GenericInfoService<User, Long>{
 
+	public void addWithUniqueKey(User user);
 }

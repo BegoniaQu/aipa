@@ -4,7 +4,7 @@ public class Reply {
 
 	//
 	private Long from_user_id;
-	private String from_user_heapic;
+	//private String from_user_heapic;
 	private String from_user_name;
 	
 	private Long to_user_id;
@@ -22,12 +22,12 @@ public class Reply {
 	public void setFrom_user_id(Long from_user_id) {
 		this.from_user_id = from_user_id;
 	}
-	public String getFrom_user_heapic() {
-		return from_user_heapic;
-	}
-	public void setFrom_user_heapic(String from_user_heapic) {
-		this.from_user_heapic = from_user_heapic;
-	}
+//	public String getFrom_user_heapic() {
+//		return from_user_heapic;
+//	}
+//	public void setFrom_user_heapic(String from_user_heapic) {
+//		this.from_user_heapic = from_user_heapic;
+//	}
 	public String getFrom_user_name() {
 		return from_user_name;
 	}

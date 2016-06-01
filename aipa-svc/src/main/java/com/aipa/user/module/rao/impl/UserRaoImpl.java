@@ -6,4 +6,10 @@ import com.qy.data.common.rao.impl.AbstractGenericInfoRaoImpl;
 
 public class UserRaoImpl extends AbstractGenericInfoRaoImpl<User, Long> implements UserRao{
 
+	@Override
+	public void addWithUniqueKey(User user) {
+		
+		
+	}
+
 }

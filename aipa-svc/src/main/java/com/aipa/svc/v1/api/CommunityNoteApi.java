@@ -29,7 +29,7 @@ import com.aipa.user.module.service.UserService;
 @RequestMapping("community/note")
 public class CommunityNoteApi extends BaseApi{
 
-	private static final Logger log = LoggerFactory.getLogger("CommunityNoteApis");
+	private static final Logger log = LoggerFactory.getLogger("CommunityNoteApi");
 	
 	@Resource
 	private CommunityNoteManager communityNoteManager;
@@ -137,6 +137,23 @@ public class CommunityNoteApi extends BaseApi{
 		return "";
 	}
 	
+	@RequestMapping(value="{id}/comment/info.ap",method = RequestMethod.DELETE)
+	public Object removComment(@PathVariable Long id,HttpServletRequest request){
+		String appver = RequestExtract.getAppver(request);
+		String ip = ParameterTool.getIpAddr(request);
+		Appplt appplt = RequestExtract.getAppplt(request);
+		//token expired?
+		Long uid = RequestExtract.getUID(request);
+		boolean expired = checkTokenExpired(uid);
+		if(expired){
+			throw new InvalidRequestRuntimeException(ResultCode.AuthenticationExpired.getMsg(),ResultCode.AuthenticationExpired.getCode());
+		}
+		log.info("delete comment or reply,uid={},appver={},appplt={},ip={},id={}",uid,appver,appplt,ip,id);
+		this.communityNoteManager.removeCommentOrReply(id);
+		return "";
+	}
+	
+	
 	@RequestMapping(value="zan.ap",method = RequestMethod.POST)
 	public Object clickGoodForNote(HttpServletRequest request){
 		String appver = RequestExtract.getAppver(request);
@@ -202,8 +219,24 @@ public class CommunityNoteApi extends BaseApi{
 	
 	@RequestMapping(value="{noteId}/detail.ap",method = RequestMethod.GET)
 	public Object getNoteDetail(@PathVariable Long noteId, HttpServletRequest request){
+		String appver = RequestExtract.getAppver(request);
+		String ip = ParameterTool.getIpAddr(request);
+		Appplt appplt = RequestExtract.getAppplt(request);
+		log.info("note detail,noteId={},appver={},appplt={},ip={}",noteId,appver,appplt,ip);
 		
-		return "";
+		return this.communityNoteManager.findNoteDetail(noteId);
+	}
+	
+	
+	@RequestMapping(value="{noteId}/comment/list.ap",method = RequestMethod.GET)
+	public Object findComment(@PathVariable Long noteId,HttpServletRequest request){
+		String appver = RequestExtract.getAppver(request);
+		String ip = ParameterTool.getIpAddr(request);
+		Appplt appplt = RequestExtract.getAppplt(request);
+		int pn = RequestExtract.getPageNum(request);
+		int ps = RequestExtract.getPageSize(request);
+		log.info("note comment list,noteId={},appver={},appplt={},ip={},catId={},pn={},ps={}",noteId,appver,appplt,ip,pn,ps);
+		return this.communityNoteManager.findComment(noteId, ps, pn);
 	}
 	
 	

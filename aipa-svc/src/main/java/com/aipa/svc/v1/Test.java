@@ -1,9 +1,27 @@
 package com.aipa.svc.v1;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class Test {
+
+	public static Date getFullDate (String partTime){
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String dateStr = sdf.format(date);
+		dateStr = dateStr + " "+ partTime;
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try{
+			return sdf1.parse(dateStr);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	
 	public static void main(String[] args) {
@@ -20,5 +38,40 @@ public class Test {
 		cal.setTime(date);
 		cal.add(Calendar.DAY_OF_YEAR,1);
 		System.out.println(cal.getTime());
+		
+		
+		String pic = "123.gif";
+		String preffix = pic.substring(0,pic.lastIndexOf("."));
+		System.out.println(preffix);
+		String extensionName = pic.substring(pic.lastIndexOf(".") + 1); 	// 获取图片的扩展名
+		System.out.println(extensionName);
+		
+		Date d = new Date();
+		System.out.println(d);
+		long then = d.getTime()/1000L;
+		System.out.println(then);
+		long f = Long.parseLong(String.valueOf(then)+"000");
+		System.out.println(new Date(f));
+		
+		
+		String host = "http://www.baidu.com/{user_id}/xxx";
+		host = host.replaceAll("\\{user_id\\}", "quyang");
+		System.out.println(host);
+		
+		double amount = 4.1;
+		double computed = amount * 0.135 * 100;
+		System.out.println(computed);
+		BigDecimal bd = new BigDecimal(computed).setScale(0, BigDecimal.ROUND_HALF_UP);
+		System.out.println(bd);
+		//DecimalFormat df=new DecimalFormat("#.##");   
+		//System.out.println(df.format(computed));
+		
+		 double income = 6.0 * 0.135 * 100; //分为单位
+		 System.out.println(income);
+	      BigDecimal res = new BigDecimal(income).setScale(0, BigDecimal.ROUND_HALF_UP); //四舍五入取整
+	      System.out.println(res);
+	      
+	      int result = getFullDate("17:00:00").compareTo(new Date());
+		System.out.println(result);
 	}
 }

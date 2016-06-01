@@ -26,7 +26,7 @@ public class User implements Serializable{
 	private Long id;
 	
 	@Column(inUniqueKey = true)
-	@RedisField(inUniqueKey = true)
+	@RedisField
 	private String username;
 	
 	@Column

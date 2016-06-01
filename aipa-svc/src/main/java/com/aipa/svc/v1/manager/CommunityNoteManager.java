@@ -30,10 +30,12 @@ import com.aipa.svc.common.enume.ZanType;
 import com.aipa.svc.common.util.DateUtils;
 import com.aipa.svc.common.util.PagedListRespData;
 import com.aipa.svc.common.vo.CommunityCommentBean;
+import com.aipa.svc.common.vo.CommunityCommentDetailBean;
 import com.aipa.svc.common.vo.CommunityNoteAddBean;
 import com.aipa.svc.common.vo.CommunityNoteBean;
 import com.aipa.svc.common.vo.CommunityNoteDetailBean;
 import com.aipa.svc.common.vo.CommunityReplyBean;
+import com.aipa.svc.common.vo.Reply;
 import com.aipa.svc.v1.param.LenConstant;
 import com.aipa.user.module.entity.User;
 import com.aipa.user.module.entity.UserNoteCollect;
@@ -217,6 +219,33 @@ public class CommunityNoteManager {
 		this.communityNoteCommentIndexService.add(index);
 	}
 	
+	
+	/**
+	 * 删除评论或者回复
+	 * @param id
+	 */
+	public void removeCommentOrReply(Long id){
+		CommunityNoteComment entity = this.communityNoteCommentService.findById(id);
+		if(entity != null){
+			entity.setDeleted(true);
+			this.communityNoteCommentService.update(entity, "deleted");
+			if(entity.getRoot_comment_id() == null){ //是评论
+				CommunityNoteCommentIndex index = new CommunityNoteCommentIndex();
+				index.setIndexId(String.valueOf(entity.getNote_id().longValue()));
+				index.setIndexType(CommunityNoteCommentIndexType.note2comment.getValue());
+				index.setCommentId(id);
+				this.communityNoteCommentIndexService.del(index);
+			}else{  //是回复
+				CommunityNoteCommentIndex index = new CommunityNoteCommentIndex();
+				index.setIndexId(String.valueOf(entity.getRoot_comment_id().longValue()));
+				index.setIndexType(CommunityNoteCommentIndexType.comment2reply.getValue());
+				index.setCommentId(id);
+			}
+		}
+		
+	}
+	
+	
 	/**
 	 * 为帖子点赞
 	 * @param noteId
@@ -299,7 +328,7 @@ public class CommunityNoteManager {
 					bean.setSex(-1); //未知
 				}
 				bean.setLocation(user.getLocation() == null ? "":user.getLocation());
-				bean.setUser_nickname(user.getNickname()==null ? user.getUsername().substring(0, 3)+"xxx":user.getNickname());
+				bean.setUser_nickname(user.getNickname()==null ? user.getUsername():user.getNickname());
 				bean.setNote_user_id(i.getUser_id());
 				bean.setNote_user_headpic(user.getHead_picture()==null ? "":user.getHead_picture());
 				//收藏数 TODO 后续根据索引搜索
@@ -350,7 +379,7 @@ public class CommunityNoteManager {
 			bean.setSex(-1); //未知
 		}
 		bean.setLocation(user.getLocation() == null ? "":user.getLocation());
-		bean.setUser_nickname(user.getNickname()==null ? user.getUsername().substring(0, 3)+"xxx":user.getNickname());
+		bean.setUser_nickname(user.getNickname()==null ? user.getUsername():user.getNickname());
 		bean.setNote_user_id(i.getUser_id());
 		bean.setNote_user_headpic(user.getHead_picture()==null ? "":user.getHead_picture());
 		//点赞数
@@ -364,6 +393,69 @@ public class CommunityNoteManager {
 	}
 	
 	
+	/**
+	 * 评论列表，包含回复
+	 * @param noteId
+	 * @param ps
+	 * @param pn
+	 * @return
+	 */
+	public PagedListRespData<CommunityCommentDetailBean> findComment(Long noteId,int ps,int pn){
+		
+		List<CommunityCommentDetailBean> list = new ArrayList<>();
+		CommunityNoteComment cnc = new CommunityNoteComment();
+		cnc.setNote_id(noteId);
+		String [] conditions = new String []{"note_id","deleted","root_comment_id"};
+		//评论
+		int total = this.communityNoteCommentService.count(cnc, null, conditions);
+		if(total > 0){
+			List<CommunityNoteComment> pagedList = this.communityNoteCommentService.find(cnc, pn, ps, 0, null, conditions);
+			for(CommunityNoteComment one: pagedList){
+				CommunityCommentDetailBean bean = new CommunityCommentDetailBean();
+				bean.setComment_id(one.getId());
+				bean.setContent(one.getContent());
+				bean.setTime(DateUtils.getDateStr(one.getCreate_time(), DateUtils.formalPattern));
+				bean.setComment_user_id(one.getContent_user_id());
+				//
+				User user = this.userService.findById(one.getContent_user_id());
+				//bean.setComment_user_heapic(user.getHead_picture()==null ? "":user.getHead_picture());
+				bean.setComment_user_name(user.getNickname()==null ? user.getUsername():user.getNickname());
+				//
+				CommunityNoteComment queryReply = new CommunityNoteComment();
+				queryReply.setRoot_comment_id(one.getId());
+				String [] queryConditions = new String []{"root_comment_id","deleted"};
+				//回复
+				int count = this.communityNoteCommentService.count(queryReply, null, queryConditions);
+				if(count > 0){
+					List<CommunityNoteComment> replyList = this.communityNoteCommentService.find(queryReply, 0, count, 1, null, queryConditions);
+					for(CommunityNoteComment replyBean :replyList){
+						Reply reply = new Reply();
+						reply.setComment_id(replyBean.getId());
+						reply.setFrom_user_id(replyBean.getContent_user_id());
+						//查询回复人昵称
+						User replyUser = this.userService.findById(replyBean.getContent_user_id());
+						reply.setFrom_user_name(replyUser.getNickname() == null? replyUser.getUsername():user.getNickname());
+						 //回复的是评论
+						if(replyBean.getCommented_id().longValue() == one.getId().longValue()){
+							reply.setTo_user_id(one.getContent_user_id());
+							reply.setTo_user_name(user.getNickname()==null ? user.getUsername():user.getNickname());
+						}else{
+						//查询被回复的那条记录信息
+							CommunityNoteComment recordUser = this.communityNoteCommentService.findById(replyBean.getCommented_id()); //被回复的记录
+							User beRepliedUser = this.userService.findById(recordUser.getContent_user_id());
+							reply.setTo_user_id(recordUser.getContent_user_id());
+							reply.setTo_user_name(beRepliedUser.getNickname()==null?beRepliedUser.getUsername():beRepliedUser.getNickname());
+						}
+						reply.setContent(replyBean.getContent());
+						reply.setTime(DateUtils.getDateStr(replyBean.getCreate_time(), DateUtils.formalPattern));
+						bean.getReply_list().add(reply);
+					}
+				}
+				list.add(bean);
+			}
+		}
+		return new PagedListRespData<>(list, pn, ps, total);
+	}
 	
 	
 	public UserService getUserService() {
