@@ -4,20 +4,20 @@ package com.aipa.svc.common.vo;
 
 public class UserInfoBean {
 
-	private String nickname = "";
-	private String head_picture = "";
-	private int sex;
+	private String nickname ;
+	private String head_picture;
+	private Integer sex;
 	private Boolean sex_switch;
-	private String sex_str = "";
-	private int age;
+	private String sex_str;
+	private Integer age;
 	private Boolean age_switch; 	//true:公开，false:关闭
-	private int sex_orient;  		//性取向：1-好男，2-好女，3-双杀，4-无性恋
+	private Integer sex_orient;  		//性取向：1-好男，2-好女，3-双杀，4-无性恋
 	private Boolean sex_orient_switch;
-	private String sex_orient_str = "";
-	private int marital_status;  //婚姻情况：1-未婚，2-已婚
+	private String sex_orient_str;
+	private Integer marital_status;  //婚姻情况：1-未婚，2-已婚
 	private Boolean marital_status_switch;
-	private String marital_status_str = "";
-	private String location = "";  		//所在地
+	private String marital_status_str;
+	private String location;  		//所在地
 	
 	
 	
@@ -33,12 +33,7 @@ public class UserInfoBean {
 	public void setHead_picture(String head_picture) {
 		this.head_picture = head_picture;
 	}
-	public int getSex() {
-		return sex;
-	}
-	public void setSex(int sex) {
-		this.sex = sex;
-	}
+	
 	public Boolean getSex_switch() {
 		return sex_switch;
 	}
@@ -51,24 +46,15 @@ public class UserInfoBean {
 	public void setSex_str(String sex_str) {
 		this.sex_str = sex_str;
 	}
-	public int getAge() {
-		return age;
-	}
-	public void setAge(int age) {
-		this.age = age;
-	}
+	
+	
 	public Boolean getAge_switch() {
 		return age_switch;
 	}
 	public void setAge_switch(Boolean age_switch) {
 		this.age_switch = age_switch;
 	}
-	public int getSex_orient() {
-		return sex_orient;
-	}
-	public void setSex_orient(int sex_orient) {
-		this.sex_orient = sex_orient;
-	}
+	
 	public Boolean getSex_orient_switch() {
 		return sex_orient_switch;
 	}
@@ -81,10 +67,29 @@ public class UserInfoBean {
 	public void setSex_orient_str(String sex_orient_str) {
 		this.sex_orient_str = sex_orient_str;
 	}
-	public int getMarital_status() {
+	
+	public Integer getSex() {
+		return sex;
+	}
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+	public Integer getSex_orient() {
+		return sex_orient;
+	}
+	public void setSex_orient(Integer sex_orient) {
+		this.sex_orient = sex_orient;
+	}
+	public Integer getMarital_status() {
 		return marital_status;
 	}
-	public void setMarital_status(int marital_status) {
+	public void setMarital_status(Integer marital_status) {
 		this.marital_status = marital_status;
 	}
 	public Boolean getMarital_status_switch() {

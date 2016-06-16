@@ -110,11 +110,11 @@ public final class ParameterTool {
 	}
 
 	public static Long getParameterLong(HttpServletRequest request, String name) {
+		String value = request.getParameter(name);	
+		if(StringUtil.isEmpty(value)){
+			throw new InvalidRequestRuntimeException("param:" + name + " not exist");
+		}
 		try {
-			String value = request.getParameter(name);	
-			if(StringUtil.isEmpty(value)){
-				throw new InvalidRequestRuntimeException("param:" + name + " not exist");
-			}
 			return Long.valueOf(value);	
 		} catch (RuntimeException e) {
 			throw new InvalidRequestRuntimeException("request parameter format error, ", name + " format error", e);

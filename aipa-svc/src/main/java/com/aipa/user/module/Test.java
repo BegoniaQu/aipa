@@ -30,11 +30,11 @@ public class Test {
 	}
 
 	public static void main(String [] args){
-		Date date = stringToDate("20160519",datePattern);
-		System.out.println(date);
-		Date today = new Date();
-		System.out.println(today);
-		
+		  StringBuilder sb = new StringBuilder("update pay_channel set ");
+		  sb.append("author_pwd = ?,");
+		  
+		  sb = sb.deleteCharAt(sb.length() - 1);
+		  System.out.println(sb.toString());
 	}
 
 	public static String dateToString(Date date,String pattern){

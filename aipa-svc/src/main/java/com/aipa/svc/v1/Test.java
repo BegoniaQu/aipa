@@ -24,6 +24,8 @@ public class Test {
 
 
 	
+	
+	
 	public static void main(String[] args) {
 		Long id = 11111l;
 		Long me = 11111l;
@@ -73,5 +75,27 @@ public class Test {
 	      
 	      int result = getFullDate("17:00:00").compareTo(new Date());
 		System.out.println(result);
+		
+		//
+		double realPay = 3.0;
+		double orderAmount = 5.0;
+		BigDecimal b1 = new BigDecimal(String.valueOf(realPay));
+	    BigDecimal b2 = new BigDecimal(String.valueOf(orderAmount));
+	    double v = b1.divide(b2,2,BigDecimal.ROUND_HALF_UP).doubleValue();
+	    System.out.println("------------"+v*1.5);
+	    
+	    doubleMultiply(1.5,3,0.5);
+	}
+	
+	public static void doubleMultiply(double a,double b,double c){
+		BigDecimal a1 = new BigDecimal(String.valueOf(a));
+		BigDecimal b1 = new BigDecimal(String.valueOf(b));
+		BigDecimal c1 = new BigDecimal(String.valueOf(c));
+		BigDecimal v = a1.multiply(b1).multiply(c1);
+		System.out.println(v.doubleValue());
+		
+		System.out.println(a1.subtract(b1).doubleValue());
+		
+		System.out.println(a+c);
 	}
 }

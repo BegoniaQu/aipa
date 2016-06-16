@@ -33,7 +33,7 @@ public class CommunityCategoryApi {
 		
 	}
 
-	@RequestMapping(value = "{id}/info.ap",method = RequestMethod.POST)
+	@RequestMapping(value = "{id}/upt.ap",method = RequestMethod.POST)
 	public Object updateCategory(@PathVariable Long id, HttpServletRequest request){
 		String categoryName = CommunityParamExtract.getCategoryName(request);
 		String descr = CommunityParamExtract.getCategoryDescr(request);

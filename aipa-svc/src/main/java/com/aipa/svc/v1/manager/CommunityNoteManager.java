@@ -295,7 +295,7 @@ public class CommunityNoteManager {
 		List<CommunityNoteBean> list = new ArrayList<>();
 		CommunityNote queryEntity = new CommunityNote();
 		queryEntity.setCategory_id(catId);
-		String [] conditions = new String[]{"category_id, deleted"};
+		String [] conditions = new String[]{"category_id","deleted"};
 		int count = this.communityNoteService.count(queryEntity, null, conditions);
 		if(count > 0){
 			List<CommunityNote> pageList = this.communityNoteService.find(queryEntity,pn,ps, 0, null, conditions);
@@ -338,8 +338,10 @@ public class CommunityNoteManager {
 				bean.setShoucang_cnt(total);
 				//浏览数
 				CommunityNoteCounter counter = this.communityNoteCounterService.findById(i.getId());
-				bean.setScan_cnt(counter.getScan_count());
-				list.add(bean);
+				if(counter != null){
+					bean.setScan_cnt(counter.getScan_count());
+				}
+				//list.add(bean);
 				//评论数 TODO 后续根据索引搜索
 				CommunityNoteComment cnc = new CommunityNoteComment();
 				cnc.setNote_id(i.getId());

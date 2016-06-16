@@ -37,7 +37,6 @@ public class AuthFilter implements Filter{
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest)request;
 		String uri = req.getRequestURI();
-		System.out.println(uri);
 		boolean noNeedAuth = false;
 		for(String url : excludedUrlList){
 			if(uri.contains(url)){

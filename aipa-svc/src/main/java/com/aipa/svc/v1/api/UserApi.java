@@ -20,6 +20,7 @@ import com.aipa.svc.common.util.JsonUtil;
 import com.aipa.svc.common.util.ParameterTool;
 import com.aipa.svc.common.util.RequestExtract;
 import com.aipa.svc.common.util.ResultCode;
+import com.aipa.svc.common.vo.OtherUserInfoBean;
 import com.aipa.svc.common.vo.UserInfoBean;
 import com.aipa.svc.common.vo.UserInfoParam;
 import com.aipa.svc.v1.manager.UserManager;
@@ -60,7 +61,7 @@ public class UserApi extends BaseApi{
 		Appplt appplt = RequestExtract.getAppplt(request);
 		//Long id = UserParamExtract.getUid(request);
 		log.info("scan uid={} info,appver={},appplt={},ip={}",new Object[]{uid,appver,appplt,ip});
-		UserInfoBean bean = this.userManager.getOtherById(uid);
+		OtherUserInfoBean bean = this.userManager.getOtherById(uid);
 		return bean;
 	}
 	
@@ -77,6 +78,7 @@ public class UserApi extends BaseApi{
 		}
 		//参数object
 		UserInfoParam uip = JsonUtil.jsonConvert(request, UserInfoParam.class);
+		uip.setUid(uid);
 		//verify params
 		if(uip.getLocation() != null){
 			if(uip.getLocation().length() > LenConstant.locationLen){

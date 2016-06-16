@@ -43,7 +43,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Short sex;
+	private Integer sex;
 	
 	@Column
 	@RedisField
@@ -51,7 +51,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Short age;
+	private Integer age;
 	
 	@Column
 	@RedisField
@@ -59,7 +59,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Short sex_orient;  //性取向：1-好男，2-好女，3-双杀，4-无性恋
+	private Integer sex_orient;  //性取向：1-好男，2-好女，3-双杀，4-无性恋
 	
 	@Column
 	@RedisField
@@ -67,7 +67,7 @@ public class User implements Serializable{
 	
 	@Column
 	@RedisField
-	private Short marital_status;  //婚姻情况：1-未婚，2-已婚
+	private Integer marital_status;  //婚姻情况：1-未婚，2-已婚
 	
 	@Column
 	@RedisField
@@ -138,11 +138,11 @@ public class User implements Serializable{
 		this.nickname = nickname;
 	}
 
-	public Short getSex() {
+	public Integer getSex() {
 		return sex;
 	}
 
-	public void setSex(Short sex) {
+	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
 
@@ -154,11 +154,11 @@ public class User implements Serializable{
 		this.sex_switch = sex_switch;
 	}
 
-	public Short getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public void setAge(Short age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
@@ -170,11 +170,11 @@ public class User implements Serializable{
 		this.age_switch = age_switch;
 	}
 
-	public Short getSex_orient() {
+	public Integer getSex_orient() {
 		return sex_orient;
 	}
 
-	public void setSex_orient(Short sex_orient) {
+	public void setSex_orient(Integer sex_orient) {
 		this.sex_orient = sex_orient;
 	}
 
@@ -186,11 +186,11 @@ public class User implements Serializable{
 		this.sex_orient_switch = sex_orient_switch;
 	}
 
-	public Short getMarital_status() {
+	public Integer getMarital_status() {
 		return marital_status;
 	}
 
-	public void setMarital_status(Short marital_status) {
+	public void setMarital_status(Integer marital_status) {
 		this.marital_status = marital_status;
 	}
 

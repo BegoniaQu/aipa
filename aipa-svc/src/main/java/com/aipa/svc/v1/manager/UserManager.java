@@ -21,6 +21,7 @@ import com.aipa.svc.common.util.DateUtils;
 import com.aipa.svc.common.util.PagedListRespData;
 import com.aipa.svc.common.vo.CollectedNoteBean;
 import com.aipa.svc.common.vo.InterestedCategoryBean;
+import com.aipa.svc.common.vo.OtherUserInfoBean;
 import com.aipa.svc.common.vo.UserInfoBean;
 import com.aipa.svc.common.vo.UserInfoParam;
 import com.aipa.svc.v1.converter.BeanConverter;
@@ -84,7 +85,7 @@ public class UserManager {
 	 * @param uid
 	 * @return
 	 */
-	public UserInfoBean getOtherById(Long uid){
+	public OtherUserInfoBean getOtherById(Long uid){
 		User user = this.userService.findById(uid);
 		if(user == null){
 			return null;
@@ -96,8 +97,7 @@ public class UserManager {
 		User user = getUser(uip.getUid());
 		//check
 		if(uip.getAge() != null){
-			Short ageShort = Short.parseShort(String.valueOf(uip.getAge()));
-			user.setAge(ageShort);
+			user.setAge(uip.getAge());
 		}
 		if(uip.getAge_switch() != null){
 			user.setAge_switch(uip.getAge_switch());
@@ -109,8 +109,7 @@ public class UserManager {
 			user.setLocation(uip.getLocation());
 		}
 		if(uip.getMarital_status() != null){
-			Short ms = Short.parseShort(String.valueOf(uip.getMarital_status())); 
-			user.setMarital_status(ms);
+			user.setMarital_status(uip.getMarital_status());
 		}
 		if(uip.getMarital_status_switch() != null){
 			user.setMarital_status_switch(uip.getMarital_status_switch() );
@@ -119,15 +118,13 @@ public class UserManager {
 			user.setNickname(uip.getNickname());
 		}
 		if(uip.getSex() != null){
-			Short sexShort = Short.parseShort(String.valueOf(uip.getSex())); 
-			user.setSex(sexShort);
+			user.setSex(uip.getSex());
 		}
 		if(uip.getSex_switch() != null){
 			user.setSex_switch(uip.getSex_switch());
 		}
 		if(uip.getSex_orient() != null){
-			Short so = Short.parseShort(String.valueOf(uip.getSex_orient())); 
-			user.setSex_orient(so);
+			user.setSex_orient(uip.getSex_orient());
 		}
 		if(uip.getSex_orient_switch() != null){
 			user.setSex_orient_switch(uip.getSex_orient_switch());

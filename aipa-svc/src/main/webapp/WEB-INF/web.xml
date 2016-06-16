@@ -59,7 +59,10 @@
 		<param-value>
 			scan.ap,
 			sign/signUp.ap,
-			sign/signIn.ap
+			sign/signIn.ap,
+			community/category/add.ap,
+			upt.ap,
+			list.ap
 		</param-value>
 	</init-param>
 	</filter>

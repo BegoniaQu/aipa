@@ -8,7 +8,7 @@ import com.qy.data.common.dao.annotation.Table;
 import com.qy.data.common.rao.annotation.RedisField;
 import com.qy.data.common.rao.annotation.RedisId;
 
-@Table(name="tb_note_counter")
+@Table(name="tb_community_note_counter")
 public class CommunityNoteCounter implements Serializable{
 
 	private static final long serialVersionUID = 7285217579208028597L;

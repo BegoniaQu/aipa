@@ -16,6 +16,7 @@ import com.qy.data.common.service.impl.AbstractGenericIndexServiceImpl;
 @Service
 public class UserNoteCollectIndexServiceImpl extends AbstractGenericIndexServiceImpl<UserNoteCollectIndex> implements UserNoteCollectIndexService{
 
+	
 	@Resource
 	private UserNoteCollectIndexDao userNoteCollectIndexDao;
 	
