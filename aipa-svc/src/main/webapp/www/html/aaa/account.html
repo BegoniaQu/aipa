@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0,user-scalable=no">
+<meta name="viewport"   content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="keywords" content="爱啪,爱爱地图,做爱地图,两性知识,两性健康,两性用品,性用品,情趣用品" />
+<meta name="description" content="爱啪，一个好玩的两性知识社区" />
+<link rel="shortcut icon" href="images/favico.ico" type="image/x-icon" /> 
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes"  />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<title>爱啪</title>
+<link rel="stylesheet" type="text/css" href="css/web_touch.css" />
+<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/adaptive.js"></script>
+
+<script>
+	window['adaptive'].desinWidth = 640;
+	window['adaptive'].baseFont = 18;
+	window['adaptive'].maxWidth = 480;
+	window['adaptive'].init();
+</script>
+</head>
+<body class="bwrap">
+	<header class="aipa-header h-c">
+		<div class="h-l"><span class="back" onclick="location.href='usercenter.html'"><i class="iconfont">&#xe616;</i></span></div>
+		个人资料
+	</header>
+
+	<div class="user-info-item mt10">
+		<ul>
+			<li id="avatar_select">
+				<div class="uleft">头像</div>
+				<div class="uright">
+					<img id="user-avatar" class="br-circle" src="http://image.store.tanlu.cc/image/user/id_779138/baseinfo/himg_20160423152720.jpeg" />
+				</div>
+				<span class="plus-s">
+					<i class="iconfont">&#xe610;</i>
+	            </span>
+			</li>
+			<li>
+				<div class="uleft">昵称</div>
+				<div class="uright">
+					船长
+				</div>
+				<span class="plus-s">
+					<i class="iconfont">&#xe610;</i>
+	            </span>
+			</li>
+		</ul>
+	</div>
+
+	<div class="user-info-item mt10">
+		<ul>
+			<li>
+				<div class="uleft">性别</div>
+				<div class="uright">
+					<span>男</span>
+				</div>
+				<span class="plus-s">
+					<i class="iconfont">&#xe610;</i>
+	            </span>
+			</li>
+			<li>
+				<div class="uleft">年龄</div>
+				<div class="uright">
+					<span>24岁</span>
+				</div>
+				<span class="plus-s">
+					<i class="iconfont">&#xe610;</i>
+	            </span>
+			</li>
+			<li>
+				<div class="uleft">性取向</div>
+				<div class="uright">
+					<span>爱好女</span>
+				</div>
+				<span class="plus-s">
+					<i class="iconfont">&#xe610;</i>
+	            </span>
+			</li>
+			<li>
+				<div class="uleft">婚姻状况</div>
+				<div class="uright">
+					<span>单身</span>
+				</div>
+				<span class="plus-s">
+					<i class="iconfont">&#xe610;</i>
+	            </span>
+			</li>
+			<li>
+				<div class="uleft">所在地</div>
+				<div class="uright">
+					<span>上海</span>
+				</div>
+				<span class="plus-s">
+					<i class="iconfont">&#xe610;</i>
+	            </span>
+			</li>
+		</ul>
+	</div>
+
+	<div class="am-pop" id="avtar_am_pop">
+	    <ul class="am-pop-item">
+	        <li data-value="1">上传头像</li>
+	    </ul>
+	    <div class="am-pop-footer"><button class="pop_btn">取消</button></div>
+	</div>
+</body>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript">
+		/*性别底部弹出*/
+	   $("#avatar_select").on('click',function(){
+	   		$("#avtar_am_pop").addClass("am-modal-active");	
+			if($(".sharebg").length>0){
+				$(".sharebg").addClass("sharebg-active");
+			}else{
+				$("body").append('<div class="sharebg"></div>');
+				$(".sharebg").addClass("sharebg-active");
+			}
+			$(".sharebg-active,.pop_btn").click(function(){
+				$("#avtar_am_pop").removeClass("am-modal-active");	
+				setTimeout(function(){
+					$(".sharebg-active").removeClass("sharebg-active");	
+					$(".sharebg").remove();	
+				},300);
+			})
+	   })
+	</script>
+
+

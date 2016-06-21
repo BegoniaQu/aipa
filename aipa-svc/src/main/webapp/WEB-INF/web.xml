@@ -62,7 +62,8 @@
 			sign/signIn.ap,
 			community/category/add.ap,
 			upt.ap,
-			list.ap
+			list.ap,
+			detail.ap
 		</param-value>
 	</init-param>
 	</filter>

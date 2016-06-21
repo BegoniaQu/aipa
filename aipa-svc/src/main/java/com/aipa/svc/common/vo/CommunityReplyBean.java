@@ -44,7 +44,7 @@ public class CommunityReplyBean {
 		StringBuilder sb = new StringBuilder();
 		sb.append("note_id=").append(note_id);
 		sb.append(",record_id=").append(record_id);
-		sb.append(",comment_id").append(comment_id);
+		sb.append(",comment_id=").append(comment_id);
 		sb.append(",content=").append(content);
 		return sb.toString();
 	}

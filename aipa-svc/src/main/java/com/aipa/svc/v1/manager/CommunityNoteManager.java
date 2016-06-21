@@ -98,6 +98,11 @@ public class CommunityNoteManager {
 		return true;
 	}
 	
+	public CommunityNoteComment getById(Long recordId){
+		CommunityNoteComment record = this.communityNoteCommentService.findById(recordId);
+		return record;
+	}
+	
 	/**
 	 * 判断取消点赞时，其参数是否ok
 	 * @param noteId
@@ -105,18 +110,16 @@ public class CommunityNoteManager {
 	 * @param goodId
 	 * @return
 	 */
-	public boolean islegalForNote(Long noteId,Long uid,Long goodId){
-		GoodClick t = this.goodClickService.findById(goodId);
-		if(t.getUser_id().longValue() != uid.longValue()){
-			return false;
+	public boolean isZaned(Long noteId,Long uid){
+		GoodClick goodsClick = new GoodClick();
+		goodsClick.setUser_id(uid);
+		goodsClick.setObject_id(noteId);
+		goodsClick.setGood_type(GoodClickIndexType.note2good.getValue());
+		int count = this.goodClickService.count(goodsClick, null, new String[]{"user_id","object_id","good_type"});
+		if(count > 0){ //没有
+			return true;
 		}
-		if(t.getObject_id().longValue() != noteId.longValue()){
-			return false;
-		}
-		if(t.getGood_type().intValue() != GoodClickIndexType.note2good.getValue()){
-			return false;
-		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -155,6 +158,8 @@ public class CommunityNoteManager {
 		index.setIndexId(String.valueOf(bean.getCategory_id().longValue()));
 		index.setIndexType(CommunityNoteIndexType.category2note.getValue());
 		this.communityNoteIndexService.add(index);
+		//增加到计数表
+		this.addCommunityNoteCounter(entity.getId());
 	}
 	
 	/**
@@ -162,23 +167,25 @@ public class CommunityNoteManager {
 	 * @param uid
 	 * @param noteId
 	 */
-	public void removeNote(Long uid,Long noteId){
+	public void removeNote(long uid,Long noteId){
 		CommunityNote note = this.communityNoteService.findById(noteId);
 		if(note != null){
-			Long catId = note.getCategory_id();
-			note.setDeleted(true);
-			this.communityNoteService.update(note, "deleted");
-			//删除user2note索引
-			CommunityNoteIndex index = new CommunityNoteIndex();
-			index.setIndexId(String.valueOf(uid.longValue()));
-			index.setIndexType(CommunityNoteIndexType.user2note.getValue());
-			index.setNoteId(noteId);
-			this.communityNoteIndexService.del(index);
-			//删除category2note索引
-			index.setIndexId(String.valueOf(catId.longValue()));
-			index.setIndexType(CommunityNoteIndexType.category2note.getValue());
-			index.setNoteId(noteId);
-			this.communityNoteIndexService.del(index);
+			if(note.getUser_id() == uid){ //是自己的帖子
+				Long catId = note.getCategory_id();
+				note.setDeleted(true);
+				this.communityNoteService.update(note, "deleted");
+				//删除user2note索引
+				CommunityNoteIndex index = new CommunityNoteIndex();
+				index.setIndexId(String.valueOf(uid));
+				index.setIndexType(CommunityNoteIndexType.user2note.getValue());
+				index.setNoteId(noteId);
+				this.communityNoteIndexService.del(index);
+				//删除category2note索引
+				index.setIndexId(String.valueOf(catId.longValue()));
+				index.setIndexType(CommunityNoteIndexType.category2note.getValue());
+				index.setNoteId(noteId);
+				this.communityNoteIndexService.del(index);
+			}
 		}
 	}
 	
@@ -211,6 +218,7 @@ public class CommunityNoteManager {
 		t.setRoot_comment_id(bean.getComment_id());
 		t.setContent(bean.getContent());
 		t.setContent_user_id(bean.getReply_user_id());
+		this.communityNoteCommentService.add(t);
 		//添加回复索引
 		CommunityNoteCommentIndex index = new CommunityNoteCommentIndex();
 		index.setIndexId(String.valueOf(t.getRoot_comment_id().longValue()));
@@ -240,11 +248,25 @@ public class CommunityNoteManager {
 				index.setIndexId(String.valueOf(entity.getRoot_comment_id().longValue()));
 				index.setIndexType(CommunityNoteCommentIndexType.comment2reply.getValue());
 				index.setCommentId(id);
+				this.communityNoteCommentIndexService.del(index);
 			}
 		}
 		
 	}
 	
+	
+	public void addCommunityNoteCounter(Long noteId){
+		CommunityNoteCounter t = new CommunityNoteCounter();
+		t.setNote_id(noteId);
+		t.setScan_count(0);
+		this.communityNoteCounterService.add(t);
+	}
+	
+	public void updateNoteScanCnt(Long noteId){
+		CommunityNoteCounter entity = new CommunityNoteCounter();
+		entity.setNote_id(noteId);
+		this.communityNoteCounterService.increment(entity, "scan_count");
+	}
 	
 	/**
 	 * 为帖子点赞
@@ -273,7 +295,11 @@ public class CommunityNoteManager {
 	 * @param uid
 	 * @param goodId
 	 */
-	public void cancelGoodForNote(Long noteId,Long uid,Long goodId){
+	public void cancelGoodForNote(Long noteId,Long uid){
+		if(!isZaned(noteId, uid)){
+			return;
+		}
+		Long goodId = getZanId(noteId,uid);
 		//删除点赞记录
 		this.goodClickService.del(goodId);
 		//删除对应索引
@@ -282,6 +308,16 @@ public class CommunityNoteManager {
 		index.setIndexType(GoodClickIndexType.note2good.getValue());
 		index.setGoodId(goodId);
 		this.goodClickIndexService.del(index);
+	}
+	
+	
+	public Long getZanId(Long noteId,Long uid){
+		GoodClick goodsClick = new GoodClick();
+		goodsClick.setUser_id(uid);
+		goodsClick.setObject_id(noteId);
+		goodsClick.setGood_type(GoodClickIndexType.note2good.getValue());
+		List<GoodClick> list = this.goodClickService.find(goodsClick, 0, 1, 1, null, new String[]{"user_id","object_id","good_type"});
+		return list.get(0).getId();
 	}
 	
 	/**
@@ -436,7 +472,7 @@ public class CommunityNoteManager {
 						reply.setFrom_user_id(replyBean.getContent_user_id());
 						//查询回复人昵称
 						User replyUser = this.userService.findById(replyBean.getContent_user_id());
-						reply.setFrom_user_name(replyUser.getNickname() == null? replyUser.getUsername():user.getNickname());
+						reply.setFrom_user_name(replyUser.getNickname() == null? replyUser.getUsername():replyUser.getNickname());
 						 //回复的是评论
 						if(replyBean.getCommented_id().longValue() == one.getId().longValue()){
 							reply.setTo_user_id(one.getContent_user_id());

@@ -112,7 +112,7 @@ public class UserApi extends BaseApi{
 	}
 	
 	
-	@RequestMapping(value = "collectedNote/list.ap",method = RequestMethod.GET)
+	@RequestMapping(value = "collectedNote/all.ap",method = RequestMethod.GET)
 	public Object findCollectedNotePage(HttpServletRequest request){
 		String appver = RequestExtract.getAppver(request);
 		String ip = ParameterTool.getIpAddr(request);
@@ -165,7 +165,7 @@ public class UserApi extends BaseApi{
 		return "";
 	}
 	
-	@RequestMapping(value = "interestedCat/list.ap",method = RequestMethod.GET)
+	@RequestMapping(value = "interestedCat/all.ap",method = RequestMethod.GET)
 	public Object findInterestedCategory(HttpServletRequest request){
 		String appver = RequestExtract.getAppver(request);
 		String ip = ParameterTool.getIpAddr(request);

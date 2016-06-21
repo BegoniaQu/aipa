@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.aipa.community.module.entity.CommunityNoteComment;
 import com.aipa.svc.common.exception.InvalidRequestRuntimeException;
 import com.aipa.svc.common.util.Appplt;
 import com.aipa.svc.common.util.JsonUtil;
@@ -20,7 +21,6 @@ import com.aipa.svc.common.util.ResultCode;
 import com.aipa.svc.common.vo.CommunityCommentBean;
 import com.aipa.svc.common.vo.CommunityNoteAddBean;
 import com.aipa.svc.common.vo.CommunityReplyBean;
-import com.aipa.svc.common.vo.GoodID;
 import com.aipa.svc.v1.manager.CommunityNoteManager;
 import com.aipa.svc.v1.param.CommunityParamExtract;
 import com.aipa.user.module.service.UserService;
@@ -75,8 +75,6 @@ public class CommunityNoteApi extends BaseApi{
 		log.info("remove note,uid={},noteId={},appver={},appplt={},ip={}",new Object[]{uid,noteId,appver,appplt,ip});
 		//call service
 		this.communityNoteManager.removeNote(uid, noteId);
-		
-		
 		return "";
 	}
 	
@@ -137,8 +135,8 @@ public class CommunityNoteApi extends BaseApi{
 		return "";
 	}
 	
-	@RequestMapping(value="{id}/comment/info.ap",method = RequestMethod.DELETE)
-	public Object removComment(@PathVariable Long id,HttpServletRequest request){
+	@RequestMapping(value="commentorreply/{id}/info.ap",method = RequestMethod.DELETE)
+	public Object removCommentOrReply(@PathVariable Long id,HttpServletRequest request){
 		String appver = RequestExtract.getAppver(request);
 		String ip = ParameterTool.getIpAddr(request);
 		Appplt appplt = RequestExtract.getAppplt(request);
@@ -149,6 +147,15 @@ public class CommunityNoteApi extends BaseApi{
 			throw new InvalidRequestRuntimeException(ResultCode.AuthenticationExpired.getMsg(),ResultCode.AuthenticationExpired.getCode());
 		}
 		log.info("delete comment or reply,uid={},appver={},appplt={},ip={},id={}",uid,appver,appplt,ip,id);
+		
+		//判断记录是否是自己的
+		CommunityNoteComment communityNoteComment = this.communityNoteManager.getById(id);
+		if(communityNoteComment == null){
+			throw new InvalidRequestRuntimeException(ResultCode.ParameterError.getMsg(),ResultCode.ParameterError.getCode());
+		}
+		if(communityNoteComment.getContent_user_id() != uid.longValue()){ //不是自己的记录，无权删除
+			throw new InvalidRequestRuntimeException(ResultCode.ParameterError.getMsg(),ResultCode.ParameterError.getCode());
+		}
 		this.communityNoteManager.removeCommentOrReply(id);
 		return "";
 	}
@@ -171,8 +178,11 @@ public class CommunityNoteApi extends BaseApi{
 		if(!this.communityNoteManager.isNoteExisted(noteId)){
 			throw new InvalidRequestRuntimeException(ResultCode.ParameterError.getMsg(),ResultCode.ParameterError.getCode());
 		}
-		Long goodId = this.communityNoteManager.clickGoodForNote(noteId, uid);
-		return new GoodID(goodId);
+		boolean isExisted = this.communityNoteManager.isZaned(noteId, uid);
+		if(!isExisted){
+			this.communityNoteManager.clickGoodForNote(noteId, uid);
+		}
+		return "";
 	}
 	
 	@RequestMapping(value="unzan.ap",method = RequestMethod.DELETE)
@@ -187,13 +197,10 @@ public class CommunityNoteApi extends BaseApi{
 			throw new InvalidRequestRuntimeException(ResultCode.AuthenticationExpired.getMsg(),ResultCode.AuthenticationExpired.getCode());
 		}
 		Long noteId = CommunityParamExtract.getNoteId(request);
-		Long goodId = CommunityParamExtract.getZanId(request);
-		log.info("cancel good for note,uid={},appver={},appplt={},ip={},noteId={},goodId={}",uid,appver,appplt,ip,noteId,goodId);
-		//check params
-		if(!this.communityNoteManager.islegalForNote(noteId, uid, goodId)){
-			throw new InvalidRequestRuntimeException(ResultCode.ParameterError.getMsg(),ResultCode.ParameterError.getCode());
-		}
-		this.communityNoteManager.cancelGoodForNote(noteId, uid, goodId);
+		//Long goodId = CommunityParamExtract.getZanId(request);
+		log.info("cancel good for note,uid={},appver={},appplt={},ip={},noteId={}",uid,appver,appplt,ip,noteId);
+		
+		this.communityNoteManager.cancelGoodForNote(noteId, uid);
 		return "";
 	}
 	
@@ -224,6 +231,7 @@ public class CommunityNoteApi extends BaseApi{
 		Appplt appplt = RequestExtract.getAppplt(request);
 		log.info("note detail,noteId={},appver={},appplt={},ip={}",noteId,appver,appplt,ip);
 		
+		this.communityNoteManager.updateNoteScanCnt(noteId); //增加计数
 		return this.communityNoteManager.findNoteDetail(noteId);
 	}
 	
